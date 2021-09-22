@@ -30,7 +30,7 @@ A purchase is a product that a customer wants to buy at a fixed time in a fixed 
 
 As an account manager, I would like to be able to insert and edit new customers. 
 
-I am logged in. I click on "Customers" in the navigation bar and get to a page where all customers are displayed. At each customer is a button with a pen. If I click on it, I will be able to edit the customer. If I click on the button with the "+" above the table, I can create a new customer. In both cases I end up in a form field where I can enter the data. When editing an already existing customer, his old data is entered there. If I click on the "Save" button below the form, the data is saved and I see the updated table. When I click the "Cancel" button, however, the change is discarded. 
+I am logged in. I click on "Customers" in the navigation bar and get to a page where all customers are displayed. At each customer is a button with a pen. If I click on it, I will be able to edit the customer. If I click on the button with the "+" above the table, I can create a new customer. In both cases a form field appears where I can enter the data. When editing an already existing customer, his old data is entered there. If I click on the "Save" button below the form, the data is saved and I see the updated table. When I click the "Cancel" button, however, the change is discarded. 
 
 ### Delete a customer
 
@@ -42,7 +42,7 @@ When I am logged in, I click on "Customers" in the navigation. There I see an ov
 
 As an account manager, I want to create a new item. 
 
-When I am logged in, I click on "Articles" and get to a page where all items are listed with the corresponding information. By clicking on the pencil next to an item, I can edit the article. By clicking on the plus sign above the table I can create a new item. In both cases I get to a form where I enter the description, the basic price in Euro and the quantity. When editing an existing item, the old data is entered there at the beginning. By clicking on "Save" I save the changes and get to the updated table. When I click the "Cancel" button, however, the change is discarded. 
+When I am logged in, I click on "Articles" and get to a page where all items are listed with the corresponding information. By clicking on the pencil next to an item, I can edit the article. By clicking on the plus sign above the table I can create a new item. In both cases a form appears where I enter the description, the basic price in Euro and the quantity. When editing an existing item, the old data is entered there at the beginning. By clicking on "Save" I save the changes and see the updated table. When I click the "Cancel" button, however, the change is discarded. 
 
 ### Delete items
 
@@ -58,7 +58,7 @@ When I am logged in, I click on "Items" and get to a page with the list of all i
 ### Start a new special offer
 As an account manager, I want to launch special offers. 
 
-When I am logged in, I click on "Special offers" and see a list with all special offers. If I click on the pencil next to a special offer, I can edit it. If I click on the plus sign above the table, I can create a new special offer. In both cases I get to a page where I can select the item and enter quantity and total price. When I edit an already existing special offer, the old data is selected and the offer must be cheaper than buying the products separately. With "Save" the changes are saved and the recent date is used, with "Cancel" discarded". After that the current table is displayed.  
+When I am logged in, I click on "Special offers" and see a list with all special offers. If I click on the pencil next to a special offer, I can edit it. If I click on the plus sign above the table, I can create a new special offer. In both cases a form appears where I can select the item and enter quantity and total price. When I edit an already existing special offer, the old data is selected and the offer must be cheaper than buying the products separately. With "Save" the changes are saved and the recent date is used, with "Cancel" discarded". After that the current table is displayed.  
 
 ### Delete a special offer
 As an account manager, I want to delete a special offer.

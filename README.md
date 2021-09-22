@@ -55,7 +55,7 @@ As an account manager, I would like to increase the quantity of an item.
 
 When I am logged in, I click on "Items" and get to a page with the list of all items. If I click on the plus sign for a certain item, a text field appears there where I can enter the number of pieces added. If I click on the button with the checkmark next to it, the number of pieces is updated. At the beginning, the text field contains the value 0, so that if I accidentally press the plus button, I can simply save without adding new pieces. 
 
-### Start a new special order
+### Start a new special offer
 As an account manager, I want to launch special offers. 
 
 When I am logged in, I click on "Special offers" and see a list with all special offers. If I click on the pencil next to a special offer, I can edit it. If I click on the plus sign above the table, I can create a new special offer. In both cases I get to a page where I can select the item and enter quantity and total price. When I edit an already existing special offer, the old data is selected and the offer must be cheaper than buying the products separately. With "Save" the changes are saved and the recent date is used, with "Cancel" discarded". After that the current table is displayed.  

@@ -1,0 +1,37 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:Log in as account manager;
+:Go to customers;
+if (Customer already exists?) then (yes)
+    :Edit customer;
+else (no)
+    :Create customer;
+endif
+fork
+    :Edit last name;
+fork again
+    :Edit first name;
+fork again
+    :Edit street;
+fork again
+    :Edit house number;
+fork again
+    :Edit postal code;
+fork again
+    :Edit city;
+fork again
+    :Edit email address;
+fork again
+    :Edit phone number;
+end fork
+if (Changes in order?) then (yes)
+    :Save;
+else (no)
+    :Cancel;
+endif
+:Return to customers;
+stop
+
+@enduml

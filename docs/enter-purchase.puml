@@ -1,0 +1,23 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:Log in as account manager;
+:Go to purchases;
+:Create purchase;
+fork
+    :Select customer;
+fork again
+    :Select item;
+fork again
+    :Edit quantity;
+end fork
+if (Changes in order?) then (yes)
+    :Save;
+else (no)
+    :Cancel;
+endif
+:Return to purchases;
+stop
+
+@enduml

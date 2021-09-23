@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:Log in as account manager;
+:Go to items;
+if (Item already exists?) then (yes)
+    :Edit item;
+else (no)
+    :Create item;
+endif
+fork
+    :Edit name;
+fork again
+    :Edit quantity;
+fork again
+    :Edit base price;
+end fork
+if (Changes in order?) then (yes)
+    :Save;
+else (no)
+    :Cancel;
+endif
+:Return to items;
+stop
+
+@enduml

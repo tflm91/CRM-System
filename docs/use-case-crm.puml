@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+:Account Manager: as AM
+
+rectangle CRM {
+    (Register a customer) as RC
+    (Delete a customer) as DC
+    (Create new item) as CI
+    (Delete items) as DI
+    (Add items) as AI
+    (Start a new speical offer) as SS
+    (Delete a special offer) as DS
+    (Enter purchase) as EP
+    (Delete purchase) as DP
+}
+
+AM --> RC
+AM --> DC
+AM --> CI
+AM --> DI
+AM --> AI
+AM --> SS
+AM --> DS
+AM --> EP
+AM --> DP
+@enduml

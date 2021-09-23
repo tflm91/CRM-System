@@ -1,0 +1,10 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:Log in as account manager;
+:Go to items;
+:Delete item;
+stop
+
+@enduml

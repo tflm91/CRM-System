@@ -1,0 +1,14 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:Log in as account manager;
+:Go to special offers;
+if(special offer expired?) then (yes)
+    :Delete special offer;
+    stop
+    else (no)
+    end
+endif
+
+@enduml

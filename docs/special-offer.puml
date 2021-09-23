@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:Log in as account manager;
+:Go to special offers;
+:Create special offer;
+fork
+    :Select item;
+fork again
+    :Edit quantity;
+fork again
+    :Edit price;
+fork again
+    :Edit begin;
+fork again
+    :Edit expiration;
+end fork
+if (Changes in order?) then (yes)
+    :Save;
+else (no)
+    :Cancel;
+endif
+:Return to special offers;
+stop
+
+@enduml

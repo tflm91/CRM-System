@@ -1,0 +1,47 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+hide methods
+
+package "Domain model" {
+    class Customer {
+        id : int PK
+        lastName : char 20
+        firstName : char 20
+        street : char 20
+        houseNumber : int
+        postalCode : int
+        emailAddress : char 40
+        phoneNumber : char 20
+    }
+
+    class Item {
+        id : int PK
+        name : char 20
+        quantity : int
+        basePrice : decimal 6, 2
+    }
+
+    class SpecialOffer {
+        id : int PK
+        product : int FK
+        quantity : int
+        price : decimal 6, 2
+        begin : date
+        expiration : date
+    }
+
+    class Purchase {
+        id : int PK
+        customer : int FK
+        product : int FK
+        quantity : int
+        date : date
+    }
+}
+
+
+Customer "1" --> "0..n" Purchase : "issues"
+Item "1" --> "0..n" Purchase
+SpecialOffer "0..n" --> "1" Item
+@enduml

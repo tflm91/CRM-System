@@ -1,0 +1,12 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:Log in as account manager;
+:Go to items;
+:Select item;
+:Enter number of added items;
+:Save;
+stop
+
+@enduml

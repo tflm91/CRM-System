@@ -1,0 +1,13 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:Log in as account manager;
+:Go to customers;
+if (customer has purchases?) then (yes)
+    end
+    else(no)
+    :Delete customer;
+    stop
+endif
+@enduml

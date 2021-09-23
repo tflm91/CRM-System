@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 21. Sep 2021 um 23:05
+-- Erstellungszeit: 23. Sep 2021 um 22:43
 -- Server-Version: 10.4.19-MariaDB
 -- PHP-Version: 8.0.7
 
@@ -33,6 +33,13 @@ CREATE TABLE `AccountManager` (
   `passwd` char(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Daten für Tabelle `AccountManager`
+--
+
+INSERT INTO `AccountManager` (`id`, `username`, `passwd`) VALUES
+(1, 'admin', 'admin');
+
 -- --------------------------------------------------------
 
 --
@@ -47,9 +54,16 @@ CREATE TABLE `Customer` (
   `houseNumber` int(11) DEFAULT NULL,
   `postalCode` int(11) DEFAULT NULL,
   `city` char(20) DEFAULT NULL,
-  `emailAdress` char(20) DEFAULT NULL,
+  `emailAddress` char(40) DEFAULT NULL,
   `phoneNumber` char(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Daten für Tabelle `Customer`
+--
+
+INSERT INTO `Customer` (`id`, `lastName`, `firstName`, `street`, `houseNumber`, `postalCode`, `city`, `emailAddress`, `phoneNumber`) VALUES
+(9, 'Leimbrock', 'Tom Frederik', 'Grünberger Str.', 198, 35394, 'Gießen', 'tom.leimbrock@web.de', '015750488902');
 
 -- --------------------------------------------------------
 
@@ -136,13 +150,13 @@ ALTER TABLE `SpecialOffer`
 -- AUTO_INCREMENT für Tabelle `AccountManager`
 --
 ALTER TABLE `AccountManager`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT für Tabelle `Customer`
 --
 ALTER TABLE `Customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT für Tabelle `Item`

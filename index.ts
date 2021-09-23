@@ -118,3 +118,87 @@ router.delete("/customer/:id", (req: express.Request, res: express.Response) => 
         res.sendStatus(500);
     })
 })
+
+router.post("/item", (req: express.Request, res: express.Response) => {
+    const name: string = req.body.name;
+    const quantity: number = Number(req.body.quantity);
+    const basePrice: number = Number(req.body.basePrice);
+
+    if(name !== undefined && quantity !== undefined && !isNaN(quantity) && basePrice !== undefined && !isNaN(basePrice)) {
+        query("INSERT INTO Item (name, quantity, basePrice) VALUES (?, ?, ?)",
+            [name, quantity, basePrice]).then(() => {
+            let id: number;
+            query("SELECT MAX(id) AS resId FROM Item").then((results: any) => {
+                id = Number(results[0].resId);
+                res.status(201);
+                res.send("/item/" + id);
+            }).catch((reason: any) => {
+                console.log(reason);
+                res.sendStatus(500);
+            })
+        }).catch((reason: any) => {
+            console.log(reason);
+            res.sendStatus(500);
+        })
+    } else {
+        console.log(name === undefined);
+        console.log(quantity === undefined);
+        console.log(basePrice === undefined);
+        console.log(isNaN(quantity));
+        console.log(isNaN(basePrice));
+        res.sendStatus(400);
+    }
+})
+
+router.get("/item", (req: express.Request, res: express.Response) => {
+    query("SELECT * FROM Item").then((results: any) => {
+        res.status(200);
+        res.json(results);
+    }).catch((reason: any) => {
+        console.log("reason");
+        res.sendStatus(500);
+    })
+})
+
+router.put("/item/:id", (req: express.Request, res: express.Response) => {
+    const id: string = req.params.id;
+    const name: string = req.body.name;
+    const quantity: number = Number(req.body.quantity);
+    const basePrice: number = Number(req.body.basePrice);
+
+    if(name !== undefined && quantity !== undefined && !isNaN(quantity) && basePrice !== undefined && !isNaN(basePrice)) {
+        query("UPDATE Item SET name = ?, quantity = ?, basePrice = ? WHERE id = ?",
+            [name, quantity, basePrice, id]).then((results: any) => {
+            if(results.affectedRows === 1) {
+                res.sendStatus(200);
+            } else {
+                res.sendStatus(404);
+            }
+        }).catch((reason: any) => {
+            console.log(reason);
+            res.sendStatus(500);
+        })
+    } else {
+        res.sendStatus(400);
+    }
+})
+
+router.delete("/item/:id", (req: express.Request, res: express.Response) => {
+    const id: string = req.params.id;
+    query("SELECT * FROM Item WHERE id = ?", [id]).then((results: any) => {
+        if(results.length == 1) {
+            query("DELETE FROM Item WHERE id = ?", [id]).then(() => {
+                res.status(200);
+                res.json(results[0]);
+            }).catch((reason: any) => {
+                console.log(reason);
+                res.sendStatus(400);
+            })
+        } else {
+            res.sendStatus(404);
+        }
+    }).catch((reason: any) => {
+        console.log(reason);
+        res.sendStatus(500);
+    })
+})

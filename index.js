@@ -114,3 +114,83 @@ router.delete("/customer/:id", function (req, res) {
         res.sendStatus(500);
     });
 });
+router.post("/item", function (req, res) {
+    var name = req.body.name;
+    var quantity = Number(req.body.quantity);
+    var basePrice = Number(req.body.basePrice);
+    if (name !== undefined && quantity !== undefined && !isNaN(quantity) && basePrice !== undefined && !isNaN(basePrice)) {
+        query("INSERT INTO Item (name, quantity, basePrice) VALUES (?, ?, ?)", [name, quantity, basePrice]).then(function () {
+            var id;
+            query("SELECT MAX(id) AS resId FROM Item").then(function (results) {
+                id = Number(results[0].resId);
+                res.status(201);
+                res.send("/item/" + id);
+            }).catch(function (reason) {
+                console.log(reason);
+                res.sendStatus(500);
+            });
+        }).catch(function (reason) {
+            console.log(reason);
+            res.sendStatus(500);
+        });
+    }
+    else {
+        console.log(name === undefined);
+        console.log(quantity === undefined);
+        console.log(basePrice === undefined);
+        console.log(isNaN(quantity));
+        console.log(isNaN(basePrice));
+        res.sendStatus(400);
+    }
+});
+router.get("/item", function (req, res) {
+    query("SELECT * FROM Item").then(function (results) {
+        res.status(200);
+        res.json(results);
+    }).catch(function (reason) {
+        console.log("reason");
+        res.sendStatus(500);
+    });
+});
+router.put("/item/:id", function (req, res) {
+    var id = req.params.id;
+    var name = req.body.name;
+    var quantity = Number(req.body.quantity);
+    var basePrice = Number(req.body.basePrice);
+    if (name !== undefined && quantity !== undefined && !isNaN(quantity) && basePrice !== undefined && !isNaN(basePrice)) {
+        query("UPDATE Item SET name = ?, quantity = ?, basePrice = ? WHERE id = ?", [name, quantity, basePrice, id]).then(function (results) {
+            if (results.affectedRows === 1) {
+                res.sendStatus(200);
+            }
+            else {
+                res.sendStatus(404);
+            }
+        }).catch(function (reason) {
+            console.log(reason);
+            res.sendStatus(500);
+        });
+    }
+    else {
+        res.sendStatus(400);
+    }
+});
+router.delete("/item/:id", function (req, res) {
+    var id = req.params.id;
+    query("SELECT * FROM Item WHERE id = ?", [id]).then(function (results) {
+        if (results.length == 1) {
+            query("DELETE FROM Item WHERE id = ?", [id]).then(function () {
+                res.status(200);
+                res.json(results[0]);
+            }).catch(function (reason) {
+                console.log(reason);
+                res.sendStatus(400);
+            });
+        }
+        else {
+            res.sendStatus(404);
+        }
+    }).catch(function (reason) {
+        console.log(reason);
+        res.sendStatus(500);
+    });
+});

@@ -42,7 +42,7 @@ When I am logged in, I click on "Customers" in the navigation. There I see an ov
 
 As an account manager, I want to create a new item. 
 
-When I am logged in, I click on "Articles" and get to a page where all items are listed with the corresponding information. By clicking on the pencil next to an item, I can edit the article. By clicking on the plus sign above the table I can create a new item. In both cases a form appears where I enter the description, the basic price in Euro and the quantity. When editing an existing item, the old data is entered there at the beginning. By clicking on "Save" I save the changes and see the updated table. When I click the "Cancel" button, however, the change is discarded. 
+When I am logged in, I click on "Items" and get to a page where all items are listed with the corresponding information. By clicking on the pencil next to an item, I can edit the item. By clicking on the plus sign above the table I can create a new item. In both cases a form appears where I enter the description, the basic price in Euro and the quantity. When editing an existing item, the old data is entered there at the beginning. By clicking on "Save" I save the changes and see the updated table. When I click the "Cancel" button, however, the change is discarded. 
 
 ### Delete items
 
@@ -69,7 +69,7 @@ When I am logged in, I click on "Special offers" and see a list with all special
 ### Enter purchase
 As an account manager, I would like to enter a new purchase. 
 
-When I am logged in and click on "Purchases", I get a list with all purchases. If I click on the plus sign, a form opens. There I can select customers and items. I can also specify the quantity, but it must not be greater than the stock. When I click on "Save", the purchase is inserted with the current date and the stock of the products is reduced according to the quantity. If I click on "Cancel", the changes are discarded. After that I see the current table. 
+When I am logged in and click on "Purchases", I get a list with all purchases. If I click on the plus sign, a form opens. There I can select customers and items. I can also specify the quantity, but it must not be greater than the stock. When I click on "Save", the purchase is inserted with the current date and the stock of the items is reduced according to the quantity. If I click on "Cancel", the changes are discarded. After that I see the current table. 
 
 ### Delete purchase
 As a customer service representative, I would like to delete an order. 

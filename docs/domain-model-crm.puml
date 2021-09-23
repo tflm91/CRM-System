@@ -24,7 +24,7 @@ package "Domain model" {
 
     class SpecialOffer {
         id : int PK
-        product : int FK
+        item : int FK
         quantity : int
         price : decimal 6, 2
         begin : date

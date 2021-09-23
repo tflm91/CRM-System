@@ -15,7 +15,7 @@ An item is a product that the user offers for sale. It has a sequential id, a na
 
 ### Special offer
 
-A special offer is an offer in which a certain item is offered in a fixed quantity at a fixed, lower price. Each offer has its own ID. It is valid only for a certain time. 
+A special offer is an offer in which a certain item is offered in a fixed quantity at a fixed, lower price for a limited period. Each offer has its own ID. It is valid only for a certain time. 
 
 ### Purchase 
 
@@ -58,7 +58,7 @@ When I am logged in, I click on "Items" and get to a page with the list of all i
 ### Start a new special offer
 As an account manager, I want to launch special offers. 
 
-When I am logged in, I click on "Special offers" and see a list with all special offers. If I click on the pencil next to a special offer, I can edit it. If I click on the plus sign above the table, I can create a new special offer. In both cases a form appears where I can select the item and enter quantity and total price. When I edit an already existing special offer, the old data is selected and the offer must be cheaper than buying the products separately. With "Save" the changes are saved and the recent date is used, with "Cancel" discarded". After that the current table is displayed.  
+When I am logged in, I click on "Special offers" and see a list with all special offers. If I click on the pencil next to a special offer, I can edit it. If I click on the plus sign above the table, I can create a new special offer. In both cases a form appears where I can select the item and enter quantity, total price, beginning and expiration date. When I edit an already existing special offer, the old data is selected and the offer must be cheaper than buying the products separately. With "Save" the changes are saved and the recent date is used, with "Cancel" discarded". After that the current table is displayed.  
 
 ### Delete a special offer
 As an account manager, I want to delete a special offer.

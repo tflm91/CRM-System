@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 23. Sep 2021 um 22:43
+-- Erstellungszeit: 23. Sep 2021 um 23:39
 -- Server-Version: 10.4.19-MariaDB
 -- PHP-Version: 8.0.7
 
@@ -78,6 +78,13 @@ CREATE TABLE `Item` (
   `basePrice` decimal(6,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Daten für Tabelle `Item`
+--
+
+INSERT INTO `Item` (`id`, `name`, `quantity`, `basePrice`) VALUES
+(3, 'Butter', 500, '1.20');
+
 -- --------------------------------------------------------
 
 --
@@ -102,7 +109,8 @@ CREATE TABLE `SpecialOffer` (
   `id` int(11) NOT NULL,
   `item` int(11) DEFAULT NULL,
   `begin` date DEFAULT NULL,
-  `expiration` date DEFAULT NULL
+  `expiration` date DEFAULT NULL,
+  `price` decimal(6,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -162,7 +170,7 @@ ALTER TABLE `Customer`
 -- AUTO_INCREMENT für Tabelle `Item`
 --
 ALTER TABLE `Item`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT für Tabelle `Purchase`

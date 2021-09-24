@@ -16,12 +16,15 @@ fork again
 fork again
     :Edit expiration;
 end fork
-if (Changes in order?) then (yes)
-    :Save;
+if(begin <= expiration) then (yes)
+    if (Changes in order?) then (yes)
+        :Save;
+    else (no)
+        :Cancel;
+    endif
+    :Return to special offers;
+    stop
 else (no)
-    :Cancel;
-endif
-:Return to special offers;
-stop
+    end
 
 @enduml

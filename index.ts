@@ -211,8 +211,9 @@ router.post("/special-offer/", (req: express.Request, res: express.Response) => 
                 if(results.length == 1) {
                     const usualPrice: number = Number(results[0].usualPrice);
                     if(price < usualPrice) {
-                        query("INSERT INTO SpecialOffer (item, quantity, price, begin, expiration) VALUES (?, ?, ?, ?, ?)",
-                            [item, quantity, price, begin, expiration]).then(() => {
+                        if(new Date(begin) <= new Date(expiration)) {
+                            query("INSERT INTO SpecialOffer (item, quantity, price, begin, expiration) VALUES (?, ?, ?, ?, ?)",
+                                [item, quantity, price, begin, expiration]).then(() => {
                                 query("SELECT MAX(id) AS resId FROM SpecialOffer").then((results: any) => {
                                     const resId: number = Number(results[0].resId);
                                     res.status(201);
@@ -221,10 +222,14 @@ router.post("/special-offer/", (req: express.Request, res: express.Response) => 
                                     console.log(reason);
                                     res.sendStatus(500);
                                 });
-                        }).catch((reason: any) => {
-                            console.log(reason);
-                            res.sendStatus(500);
-                        })
+                            }).catch((reason: any) => {
+                                console.log(reason);
+                                res.sendStatus(500);
+                            })
+                        } else {
+                            res.status(400);
+                            res.send("Error: Offer expires before it begins. ");
+                        }
                     } else {
                         res.status(400);
                         res.send("Error: Offer too expensive. ")
@@ -268,17 +273,22 @@ router.put("/special-offer/:id", (req: express.Request, res: express.Response) =
             if(results.length == 1) {
                 const usualPrice: number = Number(results[0].usualPrice);
                 if(price < usualPrice) {
-                    query("UPDATE SpecialOffer SET item = ?, quantity = ?, price = ?, begin = ?, expiration = ? WHERE id = ?",
-                        [item, quantity, price, begin, expiration, id]).then((results: any) => {
-                        if(results.affectedRows === 1) {
-                            res.sendStatus(200);
-                        } else {
-                            res.sendStatus(404);
-                        }
-                    }).catch((reason: any) => {
-                        console.log(reason);
+                    if(new Date(begin) <= new Date(expiration)) {
+                        query("UPDATE SpecialOffer SET item = ?, quantity = ?, price = ?, begin = ?, expiration = ? WHERE id = ?",
+                            [item, quantity, price, begin, expiration, id]).then((results: any) => {
+                            if (results.affectedRows === 1) {
+                                res.sendStatus(200);
+                            } else {
+                                res.sendStatus(404);
+                            }
+                        }).catch((reason: any) => {
+                            console.log(reason);
                             res.sendStatus(500);
                         });
+                    } else {
+                        res.status(400);
+                        res.send("Error: Offer expires before it begins. ");
+                    }
                 } else {
                     res.status(400);
                     res.send("Error: Offer too expensive. ")

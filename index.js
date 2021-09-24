@@ -200,19 +200,25 @@ router.post("/special-offer/", function (req, res) {
             if (results.length == 1) {
                 var usualPrice = Number(results[0].usualPrice);
                 if (price < usualPrice) {
-                    query("INSERT INTO SpecialOffer (item, quantity, price, begin, expiration) VALUES (?, ?, ?, ?, ?)", [item, quantity, price, begin, expiration]).then(function () {
-                        query("SELECT MAX(id) AS resId FROM SpecialOffer").then(function (results) {
-                            var resId = Number(results[0].resId);
-                            res.status(201);
-                            res.send("/special-offer/" + resId);
+                    if (new Date(begin) <= new Date(expiration)) {
+                        query("INSERT INTO SpecialOffer (item, quantity, price, begin, expiration) VALUES (?, ?, ?, ?, ?)", [item, quantity, price, begin, expiration]).then(function () {
+                            query("SELECT MAX(id) AS resId FROM SpecialOffer").then(function (results) {
+                                var resId = Number(results[0].resId);
+                                res.status(201);
+                                res.send("/special-offer/" + resId);
+                            }).catch(function (reason) {
+                                console.log(reason);
+                                res.sendStatus(500);
+                            });
                         }).catch(function (reason) {
                             console.log(reason);
                             res.sendStatus(500);
                         });
-                    }).catch(function (reason) {
-                        console.log(reason);
-                        res.sendStatus(500);
-                    });
+                    }
+                    else {
+                        res.status(400);
+                        res.send("Error: Offer expires before it begins. ");
+                    }
                 }
                 else {
                     res.status(400);
@@ -254,17 +260,23 @@ router.put("/special-offer/:id", function (req, res) {
             if (results.length == 1) {
                 var usualPrice = Number(results[0].usualPrice);
                 if (price < usualPrice) {
-                    query("UPDATE SpecialOffer SET item = ?, quantity = ?, price = ?, begin = ?, expiration = ? WHERE id = ?", [item, quantity, price, begin, expiration, id]).then(function (results) {
-                        if (results.affectedRows === 1) {
-                            res.sendStatus(200);
-                        }
-                        else {
-                            res.sendStatus(404);
-                        }
-                    }).catch(function (reason) {
-                        console.log(reason);
-                        res.sendStatus(500);
-                    });
+                    if (new Date(begin) <= new Date(expiration)) {
+                        query("UPDATE SpecialOffer SET item = ?, quantity = ?, price = ?, begin = ?, expiration = ? WHERE id = ?", [item, quantity, price, begin, expiration, id]).then(function (results) {
+                            if (results.affectedRows === 1) {
+                                res.sendStatus(200);
+                            }
+                            else {
+                                res.sendStatus(404);
+                            }
+                        }).catch(function (reason) {
+                            console.log(reason);
+                            res.sendStatus(500);
+                        });
+                    }
+                    else {
+                        res.status(400);
+                        res.send("Error: Offer expires before it begins. ");
+                    }
                 }
                 else {
                     res.status(400);

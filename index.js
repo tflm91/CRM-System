@@ -118,7 +118,7 @@ router.post("/item", function (req, res) {
     var name = req.body.name;
     var quantity = Number(req.body.quantity);
     var basePrice = Number(req.body.basePrice);
-    if (name !== undefined && quantity !== undefined && !isNaN(quantity) && basePrice !== undefined && !isNaN(basePrice)) {
+    if (name !== undefined && quantity !== undefined && !isNaN(quantity) && quantity >= 0 && basePrice !== undefined && !isNaN(basePrice) && basePrice >= 0.01) {
         query("INSERT INTO Item (name, quantity, basePrice) VALUES (?, ?, ?)", [name, quantity, basePrice]).then(function () {
             var id;
             query("SELECT MAX(id) AS resId FROM Item").then(function (results) {
@@ -152,7 +152,7 @@ router.put("/item/:id", function (req, res) {
     var name = req.body.name;
     var quantity = Number(req.body.quantity);
     var basePrice = Number(req.body.basePrice);
-    if (name !== undefined && quantity !== undefined && !isNaN(quantity) && basePrice !== undefined && !isNaN(basePrice)) {
+    if (name !== undefined && quantity !== undefined && !isNaN(quantity) && quantity >= 0 && basePrice !== undefined && !isNaN(basePrice) && basePrice >= 0.01) {
         query("UPDATE Item SET name = ?, quantity = ?, basePrice = ? WHERE id = ?", [name, quantity, basePrice, id]).then(function (results) {
             if (results.affectedRows === 1) {
                 res.sendStatus(200);
@@ -195,7 +195,7 @@ router.post("/special-offer/", function (req, res) {
     var price = Number(req.body.price);
     var begin = req.body.begin;
     var expiration = req.body.expiration;
-    if (item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && price !== undefined && !isNaN(price) && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
+    if (item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && quantity >= 1 && price !== undefined && !isNaN(price) && price >= 0.01 && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
         query("SELECT (? * basePrice) AS usualPrice FROM Item WHERE id = ?", [quantity, item]).then(function (results) {
             if (results.length == 1) {
                 var usualPrice = Number(results[0].usualPrice);
@@ -255,7 +255,7 @@ router.put("/special-offer/:id", function (req, res) {
     var price = Number(req.body.price);
     var begin = req.body.begin;
     var expiration = req.body.expiration;
-    if (item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && price !== undefined && !isNaN(price) && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
+    if (item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && quantity >= 1 && price !== undefined && !isNaN(price) && price >= 0.01 && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
         query("SELECT (? * basePrice) AS usualPrice FROM Item WHERE id = ?", [quantity, item]).then(function (results) {
             if (results.length == 1) {
                 var usualPrice = Number(results[0].usualPrice);

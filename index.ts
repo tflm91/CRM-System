@@ -124,7 +124,7 @@ router.post("/item", (req: express.Request, res: express.Response) => {
     const quantity: number = Number(req.body.quantity);
     const basePrice: number = Number(req.body.basePrice);
 
-    if(name !== undefined && quantity !== undefined && !isNaN(quantity) && basePrice !== undefined && !isNaN(basePrice)) {
+    if(name !== undefined && quantity !== undefined && !isNaN(quantity) && quantity >= 0 && basePrice !== undefined && !isNaN(basePrice) && basePrice >= 0.01) {
         query("INSERT INTO Item (name, quantity, basePrice) VALUES (?, ?, ?)",
             [name, quantity, basePrice]).then(() => {
             let id: number;
@@ -161,7 +161,7 @@ router.put("/item/:id", (req: express.Request, res: express.Response) => {
     const quantity: number = Number(req.body.quantity);
     const basePrice: number = Number(req.body.basePrice);
 
-    if(name !== undefined && quantity !== undefined && !isNaN(quantity) && basePrice !== undefined && !isNaN(basePrice)) {
+    if(name !== undefined && quantity !== undefined && !isNaN(quantity) && quantity >= 0 && basePrice !== undefined && !isNaN(basePrice) && basePrice >= 0.01) {
         query("UPDATE Item SET name = ?, quantity = ?, basePrice = ? WHERE id = ?",
             [name, quantity, basePrice, id]).then((results: any) => {
             if(results.affectedRows === 1) {
@@ -205,7 +205,7 @@ router.post("/special-offer/", (req: express.Request, res: express.Response) => 
     const begin: string = req.body.begin;
     const expiration: string = req.body.expiration;
 
-    if(item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && price !== undefined && !isNaN(price) && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
+    if(item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && quantity >= 1 && price !== undefined && !isNaN(price) && price >= 0.01 && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
         query("SELECT (? * basePrice) AS usualPrice FROM Item WHERE id = ?",
             [quantity, item]).then((results: any) => {
                 if(results.length == 1) {
@@ -267,7 +267,7 @@ router.put("/special-offer/:id", (req: express.Request, res: express.Response) =
     const begin: string = req.body.begin;
     const expiration: string = req.body.expiration;
 
-    if(item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && price !== undefined && !isNaN(price) && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
+    if(item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && quantity >= 1 && price !== undefined && !isNaN(price) && price >= 0.01 && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
         query("SELECT (? * basePrice) AS usualPrice FROM Item WHERE id = ?",
             [quantity, item]).then((results: any) => {
             if(results.length == 1) {

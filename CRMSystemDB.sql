@@ -58,13 +58,6 @@ CREATE TABLE `Customer` (
   `phoneNumber` char(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Daten für Tabelle `Customer`
---
-
-INSERT INTO `Customer` (`id`, `lastName`, `firstName`, `street`, `houseNumber`, `postalCode`, `city`, `emailAddress`, `phoneNumber`) VALUES
-(9, 'Leimbrock', 'Tom Frederik', 'Grünberger Str.', 198, 35394, 'Gießen', 'tom.leimbrock@web.de', '015750488902');
-
 -- --------------------------------------------------------
 
 --
@@ -78,14 +71,7 @@ CREATE TABLE `Item` (
   `basePrice` decimal(6,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Daten für Tabelle `Item`
---
-
-INSERT INTO `Item` (`id`, `name`, `quantity`, `basePrice`) VALUES
-(3, 'Butter', 500, '1.20');
-
--- --------------------------------------------------------
+-----------------------------
 
 --
 -- Tabellenstruktur für Tabelle `Purchase`
@@ -108,9 +94,10 @@ CREATE TABLE `Purchase` (
 CREATE TABLE `SpecialOffer` (
   `id` int(11) NOT NULL,
   `item` int(11) DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `price` decimal(6,2) DEFAULT NULL,
   `begin` date DEFAULT NULL,
-  `expiration` date DEFAULT NULL,
-  `price` decimal(6,2) DEFAULT NULL
+  `expiration` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -158,19 +145,19 @@ ALTER TABLE `SpecialOffer`
 -- AUTO_INCREMENT für Tabelle `AccountManager`
 --
 ALTER TABLE `AccountManager`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `Customer`
 --
 ALTER TABLE `Customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `Item`
 --
 ALTER TABLE `Item`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `Purchase`

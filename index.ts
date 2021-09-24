@@ -141,11 +141,6 @@ router.post("/item", (req: express.Request, res: express.Response) => {
             res.sendStatus(500);
         })
     } else {
-        console.log(name === undefined);
-        console.log(quantity === undefined);
-        console.log(basePrice === undefined);
-        console.log(isNaN(quantity));
-        console.log(isNaN(basePrice));
         res.sendStatus(400);
     }
 })
@@ -197,6 +192,135 @@ router.delete("/item/:id", (req: express.Request, res: express.Response) => {
         } else {
             res.sendStatus(404);
         }
+    }).catch((reason: any) => {
+        console.log(reason);
+        res.sendStatus(500);
+    })
+})
+
+router.post("/special-offer/", (req: express.Request, res: express.Response) => {
+    const item: number = Number(req.body.item);
+    const quantity: number = Number(req.body.quantity);
+    const price: number = Number(req.body.price);
+    const begin: string = req.body.begin;
+    const expiration: string = req.body.expiration;
+
+    if(item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && price !== undefined && !isNaN(price) && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
+        query("SELECT (? * basePrice) AS usualPrice FROM Item WHERE id = ?",
+            [quantity, item]).then((results: any) => {
+                if(results.length == 1) {
+                    const usualPrice: number = Number(results[0].usualPrice);
+                    if(price < usualPrice) {
+                        query("INSERT INTO SpecialOffer (item, quantity, price, begin, expiration) VALUES (?, ?, ?, ?, ?)",
+                            [item, quantity, price, begin, expiration]).then(() => {
+                                query("SELECT MAX(id) AS resId FROM SpecialOffer").then((results: any) => {
+                                    const resId: number = Number(results[0].resId);
+                                    res.status(201);
+                                    res.send("/special-offer/" + resId);
+                                }).catch((reason: any) => {
+                                    console.log(reason);
+                                    res.sendStatus(500);
+                                });
+                        }).catch((reason: any) => {
+                            console.log(reason);
+                            res.sendStatus(500);
+                        })
+                    } else {
+                        res.status(400);
+                        res.send("Error: Offer too expensive. ")
+                    }
+                } else {
+                    res.status(400);
+                    res.send("Error: Item not found. ")
+                }
+        }).catch((reason: any) => {
+            console.log(reason);
+            res.sendStatus(500);
+        })
+    } else {
+        res.status(400);
+        res.send("Error: Invalid arguments. ")
+    }
+})
+
+router.get("/special-offer", (req: express.Request, res: express.Response) => {
+    query("SELECT * FROM SpecialOffer").then((results: any) => {
+        res.status(200);
+        res.json(results);
+    }).catch((reason: any) => {
+        console.log("reason");
+        res.sendStatus(500);
+    })
+})
+
+
+router.put("/special-offer/:id", (req: express.Request, res: express.Response) => {
+    const id: number = Number(req.params.id);
+    const item: number = Number(req.body.item);
+    const quantity: number = Number(req.body.quantity);
+    const price: number = Number(req.body.price);
+    const begin: string = req.body.begin;
+    const expiration: string = req.body.expiration;
+
+    if(item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && price !== undefined && !isNaN(price) && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
+        query("SELECT (? * basePrice) AS usualPrice FROM Item WHERE id = ?",
+            [quantity, item]).then((results: any) => {
+            if(results.length == 1) {
+                const usualPrice: number = Number(results[0].usualPrice);
+                if(price < usualPrice) {
+                    query("UPDATE SpecialOffer SET item = ?, quantity = ?, price = ?, begin = ?, expiration = ? WHERE id = ?",
+                        [item, quantity, price, begin, expiration, id]).then((results: any) => {
+                        if(results.affectedRows === 1) {
+                            res.sendStatus(200);
+                        } else {
+                            res.sendStatus(404);
+                        }
+                    }).catch((reason: any) => {
+                        console.log(reason);
+                            res.sendStatus(500);
+                        });
+                } else {
+                    res.status(400);
+                    res.send("Error: Offer too expensive. ")
+                }
+            } else {
+                res.status(400);
+                res.send("Error: Item not found. ")
+            }
+        }).catch((reason: any) => {
+            console.log(reason);
+            res.sendStatus(500);
+        })
+    } else {
+        res.status(400);
+        res.send("Error: Invalid arguments. ")
+    }
+})
+
+router.delete("/special-offer/:id", (req: express.Request, res: express.Response) => {
+    const id: number = Number(req.params.id);
+    query("SELECT * FROM SpecialOffer WHERE id = ?",
+        [id]).then((results: any) => {
+            if(results.length === 1) {
+                const expiration = new Date(results[0].expiration);
+                const today = new Date;
+                if (today >= expiration) {
+                    console.log(id);
+                    query("DELETE FROM SpecialOffer WHERE id = ?",
+                    [id]).then(() => {
+                        res.status(200);
+                        res.json(results[0]);
+                    }).catch((reason: any) => {
+                        console.log(reason);
+                        res.sendStatus(500);
+                    })
+                } else {
+                    res.status(400);
+                    res.send("Error: Special offer not expired yet. ");
+                }
+            } else {
+                res.sendStatus(404);
+            }
     }).catch((reason: any) => {
         console.log(reason);
         res.sendStatus(500);

@@ -135,11 +135,6 @@ router.post("/item", function (req, res) {
         });
     }
     else {
-        console.log(name === undefined);
-        console.log(quantity === undefined);
-        console.log(basePrice === undefined);
-        console.log(isNaN(quantity));
-        console.log(isNaN(basePrice));
         res.sendStatus(400);
     }
 });
@@ -185,6 +180,131 @@ router.delete("/item/:id", function (req, res) {
                 console.log(reason);
                 res.sendStatus(400);
             });
+        }
+        else {
+            res.sendStatus(404);
+        }
+    }).catch(function (reason) {
+        console.log(reason);
+        res.sendStatus(500);
+    });
+});
+router.post("/special-offer/", function (req, res) {
+    var item = Number(req.body.item);
+    var quantity = Number(req.body.quantity);
+    var price = Number(req.body.price);
+    var begin = req.body.begin;
+    var expiration = req.body.expiration;
+    if (item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && price !== undefined && !isNaN(price) && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
+        query("SELECT (? * basePrice) AS usualPrice FROM Item WHERE id = ?", [quantity, item]).then(function (results) {
+            if (results.length == 1) {
+                var usualPrice = Number(results[0].usualPrice);
+                if (price < usualPrice) {
+                    query("INSERT INTO SpecialOffer (item, quantity, price, begin, expiration) VALUES (?, ?, ?, ?, ?)", [item, quantity, price, begin, expiration]).then(function () {
+                        query("SELECT MAX(id) AS resId FROM SpecialOffer").then(function (results) {
+                            var resId = Number(results[0].resId);
+                            res.status(201);
+                            res.send("/special-offer/" + resId);
+                        }).catch(function (reason) {
+                            console.log(reason);
+                            res.sendStatus(500);
+                        });
+                    }).catch(function (reason) {
+                        console.log(reason);
+                        res.sendStatus(500);
+                    });
+                }
+                else {
+                    res.status(400);
+                    res.send("Error: Offer too expensive. ");
+                }
+            }
+            else {
+                res.status(400);
+                res.send("Error: Item not found. ");
+            }
+        }).catch(function (reason) {
+            console.log(reason);
+            res.sendStatus(500);
+        });
+    }
+    else {
+        res.status(400);
+        res.send("Error: Invalid arguments. ");
+    }
+});
+router.get("/special-offer", function (req, res) {
+    query("SELECT * FROM SpecialOffer").then(function (results) {
+        res.status(200);
+        res.json(results);
+    }).catch(function (reason) {
+        console.log("reason");
+        res.sendStatus(500);
+    });
+});
+router.put("/special-offer/:id", function (req, res) {
+    var id = Number(req.params.id);
+    var item = Number(req.body.item);
+    var quantity = Number(req.body.quantity);
+    var price = Number(req.body.price);
+    var begin = req.body.begin;
+    var expiration = req.body.expiration;
+    if (item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && price !== undefined && !isNaN(price) && new Date(begin) !== undefined && new Date(expiration) !== undefined) {
+        query("SELECT (? * basePrice) AS usualPrice FROM Item WHERE id = ?", [quantity, item]).then(function (results) {
+            if (results.length == 1) {
+                var usualPrice = Number(results[0].usualPrice);
+                if (price < usualPrice) {
+                    query("UPDATE SpecialOffer SET item = ?, quantity = ?, price = ?, begin = ?, expiration = ? WHERE id = ?", [item, quantity, price, begin, expiration, id]).then(function (results) {
+                        if (results.affectedRows === 1) {
+                            res.sendStatus(200);
+                        }
+                        else {
+                            res.sendStatus(404);
+                        }
+                    }).catch(function (reason) {
+                        console.log(reason);
+                        res.sendStatus(500);
+                    });
+                }
+                else {
+                    res.status(400);
+                    res.send("Error: Offer too expensive. ");
+                }
+            }
+            else {
+                res.status(400);
+                res.send("Error: Item not found. ");
+            }
+        }).catch(function (reason) {
+            console.log(reason);
+            res.sendStatus(500);
+        });
+    }
+    else {
+        res.status(400);
+        res.send("Error: Invalid arguments. ");
+    }
+});
+router.delete("/special-offer/:id", function (req, res) {
+    var id = Number(req.params.id);
+    query("SELECT * FROM SpecialOffer WHERE id = ?", [id]).then(function (results) {
+        if (results.length === 1) {
+            var expiration = new Date(results[0].expiration);
+            var today = new Date;
+            if (today >= expiration) {
+                console.log(id);
+                query("DELETE FROM SpecialOffer WHERE id = ?", [id]).then(function () {
+                    res.status(200);
+                    res.json(results[0]);
+                }).catch(function (reason) {
+                    console.log(reason);
+                    res.sendStatus(500);
+                });
+            }
+            else {
+                res.status(400);
+                res.send("Error: Special offer not expired yet. ");
+            }
         }
         else {
             res.sendStatus(404);

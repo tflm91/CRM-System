@@ -85,7 +85,8 @@ router.put("/customer/:id", (req: express.Request, res: express.Response) => {
             [lastName, firstName, street, houseNumber, postalCode, city, emailAddress, phoneNumber, id], (err, result:ResultSetHeader) => {
                 if(err != null) {
                     console.log(err);
-                    res.sendStatus(500);
+                    res.status(400);
+                    res.send("Error: Customer has purchases. ");
                 } else {
                     if(result.affectedRows === 1) {
                         res.sendStatus(200);
@@ -95,7 +96,8 @@ router.put("/customer/:id", (req: express.Request, res: express.Response) => {
                 }
             })
     } else {
-        res.sendStatus(400);
+        res.status(400);
+        res.send("Error: Invalid arguments. ");
     }
 })
 
@@ -113,7 +115,7 @@ router.delete("/customer/:id", (req: express.Request, res: express.Response) => 
                 connection.query("DELETE FROM Customer WHERE id = ?", [id], (err) => {
                     if(err !== null) {
                         console.log(err);
-                        res.sendStatus(500);
+                        res.sendStatus(400);
                     } else {
                         res.status(200);
                         res.json(customer);
@@ -175,7 +177,8 @@ router.put("/item/:id", (req: express.Request, res: express.Response) => {
             [name, quantity, basePrice, id], (err, result:ResultSetHeader) => {
             if(err !== null) {
                 console.log(err);
-                res.sendStatus(500);
+                res.status(400);
+                res.send("Error: Item is purchased. ");
             } else {
                 if(result.affectedRows === 1) {
                     res.sendStatus(200);
@@ -185,7 +188,8 @@ router.put("/item/:id", (req: express.Request, res: express.Response) => {
             }
             })
     } else {
-        res.sendStatus(400);
+        res.status(400);
+        res.send("Error: Invalid arguments. ");
     }
 })
 
@@ -203,7 +207,7 @@ router.delete("/item/:id", (req: express.Request, res: express.Response) => {
                 connection.query("DELETE FROM Item WHERE id = ?", [id], (err) => {
                     if(err !== null) {
                         console.log(err);
-                        res.sendStatus(500);
+                        res.sendStatus(400);
                     } else {
                         res.status(200);
                         res.json(item);
@@ -357,3 +361,212 @@ router.delete("/special-offer/:id", (req: express.Request, res: express.Response
     })
 })
 
+interface IPurchase extends RowDataPacket {
+    id: number;
+    customer: number;
+    item: number;
+    quantity: number;
+    date: Date;
+    price: number;
+}
+
+router.post("/purchase", (req: express.Request, res: express.Response) => {
+    const customer: number = Number(req.body.customer);
+    const item: number = Number(req.body.item);
+    const quantity: number = Number(req.body.quantity);
+    const date: Date = new Date(req.body.date);
+
+    if(customer !== undefined && !isNaN(customer) && item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && quantity > 0 && date !== undefined && date <= new Date()) {
+        connection.query("SELECT * FROM Customer WHERE id = ?", [customer], (err, result: ICustomer[]) => {
+            if(err !== null) {
+                console.log(err);
+                res.sendStatus(500);
+            } else {
+                if(result.length !== 1) {
+                    res.status(400);
+                    res.send("Error: Customer not found.");
+                } else {
+                    connection.query("SELECT * FROM Item WHERE Id = ?", [item], (err, result:IItem[]) => {
+                        if(err !== null) {
+                            console.log(err);
+                            res.sendStatus(500);
+                        } else {
+                            if(result.length !== 1) {
+                                res.status(400);
+                                res.send("Error: Item not found.");
+                            } else {
+                                if(quantity > result[0].quantity) {
+                                    res.status(400);
+                                    res.send("Error: Not enough pieces available. ");
+                                } else {
+                                    connection.query("UPDATE Item SET quantity = ? WHERE id = ?", [result[0].quantity - quantity, item], (err) => {
+                                        if(err !== null) {
+                                            console.log(err);
+                                            res.sendStatus(500);
+                                        } else {
+                                            connection.query("INSERT INTO Purchase (customer, item, quantity, date) VALUES (?, ?, ?, ?)", [customer, item, quantity, date], (err, result:ResultSetHeader) => {
+                                                if(err !== null) {
+                                                    console.log(err);
+                                                    res.sendStatus(500);
+                                                } else {
+                                                    res.status(201);
+                                                    res.send("/purchase/" + result.insertId);
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        })
+    } else {
+        res.status(400);
+        res.send("Error: Invalid Arguments");
+    }
+})
+
+function purchasePrice(purchase: IPurchase, specialOffers: ISpecialOffer[], items: IItem[]): void {
+    let remainingQuantity: number = purchase.quantity;
+    const item: IItem = items.find(value => value.id == purchase.item);
+    const possibleSpecialOffers: ISpecialOffer[] = specialOffers.filter(value => value.item == purchase.item && value.begin <= purchase.date && value.expiration >= purchase.date);
+    purchase.price = 0;
+    while(remainingQuantity > 0) {
+        const remainingSpecialOffers: ISpecialOffer[] = possibleSpecialOffers.filter(value => value.quantity <= remainingQuantity);
+        if(remainingSpecialOffers.length === 0) {
+            purchase.price += Number(remainingQuantity *item.basePrice);
+            remainingQuantity = 0;
+        } else {
+            const maxQuantity: number = Math.max(...remainingSpecialOffers.map(value => value.quantity));
+            const specialOffer: ISpecialOffer = remainingSpecialOffers.find(value => value.quantity = maxQuantity);
+            purchase.price += Number(specialOffer.price);
+            remainingQuantity -= maxQuantity;
+        }
+    }
+}
+
+router.get("/purchase", (req: express.Request, res: express.Response) => {
+    connection.query("SELECT * FROM Purchase", [], (err, purchases: IPurchase[]) => {
+        if(err !== null) {
+            console.log(err);
+            res.sendStatus(500);
+        } else {
+            connection.query("SELECT * FROM SpecialOffer", [], (err, specialOffers: ISpecialOffer[]) => {
+                if(err !== null) {
+                    console.log(err);
+                    res.sendStatus(500);
+                } else {
+                    connection.query("SELECT * FROM Item", [], (err, items: IItem[]) => {
+                        if(err !== null) {
+                            console.log(err);
+                            res.sendStatus(500);
+                        } else {
+                            purchases.forEach((value: IPurchase) => {
+                                purchasePrice(value, specialOffers, items);
+                            })
+                            res.status(200);
+                            res.json(purchases);
+                        }
+                    })
+                }
+            })
+        }
+    })
+})
+
+router.put("/purchase/:id", (req: express.Request, res: express.Response) => {
+    const id: number = Number(req.params.id);
+    const customer: number = Number(req.body.customer);
+    const item: number = Number(req.body.item);
+    const quantity: number = Number(req.body.quantity);
+    const date: Date = new Date(req.body.date);
+
+    if(customer !== undefined && !isNaN(customer) && item !== undefined && !isNaN(item) && quantity !== undefined && !isNaN(quantity) && quantity > 0 && date !== undefined && date <= new Date()) {
+        connection.query("SELECT * FROM Customer WHERE id = ?", [customer], (err, result:ICustomer[]) => {
+            if(err !== null) {
+                console.log(err);
+                res.sendStatus(500);
+            } else {
+                if(result.length !== 1) {
+                    res.status(400);
+                    res.send("Error: customer not found");
+                } else {
+                    connection.query("SELECT * FROM Item WHERE id = ?", [item], (err, result:IItem[]) => {
+                        if(err !== null) {
+                            console.log(err);
+                            res.sendStatus(500);
+                        } else {
+                            if(result.length !== 1) {
+                                res.status(400);
+                                res.send("Error: Item not found!");
+                            } else {
+                                connection.query("SELECT * FROM Purchase WHERE id = ?", [id], (err, result1: IPurchase[]) => {
+                                    if(err !== null) {
+                                        console.log(err);
+                                        res.sendStatus(500);
+                                    } else {
+                                        if (result1.length !== 1) {
+                                            res.sendStatus(404);
+                                        } else {
+                                            const newQuantity: number = item == result1[0].item ? result[0].quantity + result1[0].quantity - quantity : result[0].quantity - quantity;
+                                            if(newQuantity < 0) {
+                                                res.status(400);
+                                                res.send("Error: not enough pieces available");
+                                            } else {
+                                                connection.query("UPDATE Purchase SET customer = ?, item = ?, quantity = ?, date = ? WHERE id = ?",
+                                                    [customer, item, quantity, date, id], (err) => {
+                                                    if(err !== null) {
+                                                        console.log(err);
+                                                        res.sendStatus(500);
+                                                    } else {
+                                                        connection.query("UPDATE Item SET quantity = ? WHERE id = ?", [newQuantity, item], (err) => {
+                                                            if(err !== null) {
+                                                                console.log(err);
+                                                                res.sendStatus(500);
+                                                            } else {
+                                                                res.sendStatus(200);
+                                                            }
+                                                        })
+                                                    }
+                                                    })
+                                            }
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+            }
+        })
+    } else {
+        res.status(400);
+        res.send("Error: Invalid arguments");
+    }
+})
+
+router.delete("/purchase/:id", (req: express.Request, res: express.Response) => {
+    const id: number = Number(req.params.id);
+    connection.query("SELECT * FROM Purchase WHERE id = ?", [id], (err, result:IPurchase[]) => {
+        if(err !== null) {
+            console.log(err);
+            res.sendStatus(500);
+        } else {
+            if(result.length !== 1) {
+                res.sendStatus(404);
+            } else {
+                connection.query("DELETE FROM Purchase WHERE id = ?", [id], (err) => {
+                    if(err !== null) {
+                        console.log(err);
+                        res.sendStatus(500);
+                    } else {
+                        res.status(200);
+                        res.json(result[0]);
+                    }
+                })
+            }
+        }
+    })
+})

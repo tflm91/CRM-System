@@ -42,23 +42,23 @@ When I am logged in, I click on "Customers" in the navigation. There I see an ov
 
 As an account manager, I want to create a new item. 
 
-When I am logged in, I click on "Items" and get to a page where all items are listed with the corresponding information. By clicking on the pencil next to an item, I can edit the item. By clicking on the plus sign above the table I can create a new item. In both cases a form appears where I enter the description, the basic price in Euro and the quantity. When editing an existing item, the old data is entered there at the beginning. By clicking on "Save" I save the changes and see the updated table. When I click the "Cancel" button, however, the change is discarded. 
+When I am logged in, I click on "Items" and get to a page where all items are listed with the corresponding information. By clicking on the pencil next to an item, I can edit the item. By clicking on the plus sign above the table I can create a new item. In both cases a form appears where I enter the description, the basic price in Euro and the quantity. When editing an existing item, the old data is entered there at the beginning. By clicking on "Save" I save the changes and see the updated table. When I click the "Cancel" button, however, the change is discarded. The quantity of a new item has to be not negative and the price has to be at least 1 Cent. 
 
 ### Delete items
 
 As an account manager, I would like to delete items from the database. 
 
-When I am logged in, I click on "Items" and get to a table with all items. When I click on the trash can button for a particular item, the item is deleted along with associated special offers and I see the updated table. In the associated purchases as item will be shown "Unknown".  
+When I am logged in, I click on "Items" and get to a table with all items. When I click on the trash can button for a particular item, the item is deleted along with associated special offers and I see the updated table. It is impossible to delete an item which is part of at least one purchase. 
 
-### Add items
+### Add pieces
 As an account manager, I would like to increase the quantity of an item. 
 
-When I am logged in, I click on "Items" and get to a page with the list of all items. If I click on the plus sign for a certain item, a text field appears there where I can enter the number of pieces added. If I click on the button with the checkmark next to it, the number of pieces is updated. At the beginning, the text field contains the value 0, so that if I accidentally press the plus button, I can simply save without adding new pieces. The quantity must not be negative and the price has to be at least 0.01. 
+When I am logged in, I click on "Items" and get to a page with the list of all items. If I click on the plus sign for a certain item, a text field appears there where I can enter the number of pieces added. If I click on the button with the checkmark next to it, the number of pieces is updated. At the beginning, the text field contains the value 0, so that if I accidentally press the plus button, I can simply save without adding new pieces.  
 
 ### Start a new special offer
 As an account manager, I want to launch special offers. 
 
-When I am logged in, I click on "Special offers" and see a list with all special offers. If I click on the pencil next to a special offer, I can edit it. If I click on the plus sign above the table, I can create a new special offer. In both cases a form appears where I can select the item and enter quantity, total price, beginning and expiration date. When I edit an already existing special offer, the old data is selected and the offer must be cheaper than buying the products separately, the special offer must not expire before it begins. The price must be greater or equal than 0.01 and the quantity must be at least 1. With "Save" the changes are saved and the recent date is used, with "Cancel" discarded". After that the current table is displayed.  
+When I am logged in, I click on "Special offers" and see a list with all special offers. If I click on the pencil next to a special offer, I can edit it. If I click on the plus sign above the table, I can create a new special offer. In both cases a form appears where I can select the item and enter quantity, total price, beginning and expiration date. When I edit an already existing special offer, the old data is selected and the offer must be cheaper than buying the products separately, the special offer must not expire before it begins. The price must be greater or equal than 0.01 and the quantity must be at least 1. With "Save" the changes are saved and the recent date is used, with "Cancel" discarded. After that the current table is displayed.  
 
 ### Delete a special offer
 As an account manager, I want to delete a special offer.
@@ -69,12 +69,12 @@ When I am logged in, I click on "Special offers" and see a list with all special
 ### Enter purchase
 As an account manager, I would like to enter a new purchase. 
 
-When I am logged in and click on "Purchases", I get a list with all purchases. If I click on the plus sign, a form opens. There I can select customers and items. I can also specify the quantity, but it must not be greater than the stock. When I click on "Save", the purchase is inserted with the current date and the stock of the items is reduced according to the quantity. If I click on "Cancel", the changes are discarded. After that I see the current table. 
+When I am logged in and click on "Purchases", I get a list with all purchases. If I click on the plus sign, a form opens. There I can select customers and items. I can also specify the quantity, but it must not be greater than the stock. Then I enter the date of the purchase. When I click on "Save", the purchase is inserted and the stock of the items is reduced according to the quantity. If I click on "Cancel", the changes are discarded. After that I see the current table. 
 
 ### Delete purchase
-As a customer service representative, I would like to delete an order. 
+As an account manager, I would like to delete a purchase. 
 
-When I am logged in and click on "Orders", I see a list of all orders. If I now click on the trash can next to an order, the order is deleted and the table is updated. However, this has no effect on the quantity of the item. 
+When I am logged in and click on "Purchases", I see a list of all purchases. If I now click on the trash can next to an order, the order is deleted and the table is updated. However, this has no effect on the quantity of the item. 
 
 ## Domain model
 ![Domain model](docs/domain-model-crm.png)
@@ -82,7 +82,7 @@ When I am logged in and click on "Orders", I see a list of all orders. If I now 
 ## Activity diagrams
 
 ### Register a customer
-![Acitivity diagram "Register a customer"](docs/register-a-customer.png)
+![Activity diagram "Register a customer"](docs/register-a-customer.png)
 
 ### Delete a customer
 ![Activity diagram "Delete a customer"](docs/delete-a-customer.png)
@@ -93,8 +93,8 @@ When I am logged in and click on "Orders", I see a list of all orders. If I now 
 ### Delete item
 ![Activity diagram "Delete item"](docs/delete-item.png)
 
-### Add items
-![Activity diagram "Add items"](docs/add-items.png)
+### Add pieces
+![Activity diagram "Add pieces"](docs/add-pieces.png)
 
 ### Start a new special offer
 ![Activity diagram "Create new special offer"](docs/special-offer.png)

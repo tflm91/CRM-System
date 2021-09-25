@@ -5,7 +5,7 @@ start
 :Log in as account manager;
 :Go to items;
 :Select item;
-:Enter number of added items;
+:Enter number of added pieces;
 :Save;
 stop
 

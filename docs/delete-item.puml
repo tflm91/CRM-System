@@ -4,7 +4,11 @@
 start
 :Log in as account manager;
 :Go to items;
+if(item has purchases?) then (yes)
+    end
+else (no)
 :Delete item;
 stop
+endif
 
 @enduml

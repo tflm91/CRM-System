@@ -8,7 +8,7 @@ rectangle CRM {
     (Delete a customer) as DC
     (Create new item) as CI
     (Delete items) as DI
-    (Add items) as AI
+    (Add pieces) as AI
     (Start a new speical offer) as SS
     (Delete a special offer) as DS
     (Enter purchase) as EP

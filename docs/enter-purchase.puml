@@ -11,6 +11,8 @@ fork again
     :Select item;
 fork again
     :Edit quantity;
+fork again
+    :Edit date;
 end fork
 if (Changes in order?) then (yes)
     :Save;

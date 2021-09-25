@@ -33,13 +33,6 @@ CREATE TABLE `AccountManager` (
   `passwd` char(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Daten für Tabelle `AccountManager`
---
-
-INSERT INTO `AccountManager` (`id`, `username`, `passwd`) VALUES
-(1, 'admin', 'admin');
-
 -- --------------------------------------------------------
 
 --
@@ -82,7 +75,7 @@ CREATE TABLE `Purchase` (
   `customer` int(11) DEFAULT NULL,
   `item` int(11) DEFAULT NULL,
   `quantity` int(11) DEFAULT NULL,
-  `date` int(11) DEFAULT NULL
+  `date` DATE DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -180,7 +173,7 @@ ALTER TABLE `SpecialOffer`
 --
 ALTER TABLE `Purchase`
   ADD CONSTRAINT `fk_customer` FOREIGN KEY (`customer`) REFERENCES `Customer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_item_purchase` FOREIGN KEY (`item`) REFERENCES `Item` (`id`) ON DELETE SET NULL ON UPDATE SET NULL;
+  ADD CONSTRAINT `fk_item_purchase` FOREIGN KEY (`item`) REFERENCES `Item` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints der Tabelle `SpecialOffer`

@@ -34,7 +34,7 @@ package "Domain model" {
     class Purchase {
         id : int PK
         customer : int FK
-        product : int FK
+        item : int FK
         quantity : int
         date : date
     }

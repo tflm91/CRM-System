@@ -19,6 +19,34 @@ router.listen(8080);
 router.use(express.urlencoded({extended: false}));
 router.use(express.json());
 
+router.use("/res", express.static(__dirname + "/public"));
+router.use("/dependency", express.static(__dirname + "/node_modules"));
+
+router.get("/", (req: express.Request, res: express.Response) => {
+    res.status(200);
+    res.sendFile(__dirname + "/views/index.html");
+})
+
+router.get("/customer.html", (req: express.Request, res: express.Response) => {
+    res.status(200);
+    res.sendFile(__dirname + "/views/customer.html");
+})
+
+router.get("/item.html", (req: express.Request, res: express.Response) => {
+    res.status(200);
+    res.sendFile(__dirname + "/views/item.html");
+})
+
+router.get("/special-offer.html", (req: express.Request, res: express.Response) => {
+    res.status(200);
+    res.sendFile(__dirname + "/views/special-offer.html");
+})
+
+router.get("/purchase.html", (req: express.Request, res: express.Response) => {
+    res.status(200);
+    res.sendFile(__dirname + "/views/purchase.html");
+})
+
 interface ICustomer extends RowDataPacket {
     id: number,
     lastName: string;

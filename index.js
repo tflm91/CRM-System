@@ -16,6 +16,28 @@ var router = express();
 router.listen(8080);
 router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
+router.use("/res", express.static(__dirname + "/public"));
+router.use("/dependency", express.static(__dirname + "/node_modules"));
+router.get("/", function (req, res) {
+    res.status(200);
+    res.sendFile(__dirname + "/views/index.html");
+});
+router.get("/customer.html", function (req, res) {
+    res.status(200);
+    res.sendFile(__dirname + "/views/customer.html");
+});
+router.get("/item.html", function (req, res) {
+    res.status(200);
+    res.sendFile(__dirname + "/views/item.html");
+});
+router.get("/special-offer.html", function (req, res) {
+    res.status(200);
+    res.sendFile(__dirname + "/views/special-offer.html");
+});
+router.get("/purchase.html", function (req, res) {
+    res.status(200);
+    res.sendFile(__dirname + "/views/purchase.html");
+});
 router.post("/customer", function (req, res) {
     var lastName = req.body.lastName;
     var firstName = req.body.firstName;

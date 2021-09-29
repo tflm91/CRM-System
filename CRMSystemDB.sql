@@ -41,12 +41,12 @@ CREATE TABLE `AccountManager` (
 
 CREATE TABLE `Customer` (
   `id` int(11) NOT NULL,
-  `lastName` char(20) DEFAULT NULL,
-  `firstName` char(20) DEFAULT NULL,
-  `street` char(20) DEFAULT NULL,
+  `lastName` char(40) DEFAULT NULL,
+  `firstName` char(40) DEFAULT NULL,
+  `street` char(40) DEFAULT NULL,
   `houseNumber` int(11) DEFAULT NULL,
   `postalCode` int(11) DEFAULT NULL,
-  `city` char(20) DEFAULT NULL,
+  `city` char(40) DEFAULT NULL,
   `emailAddress` char(40) DEFAULT NULL,
   `phoneNumber` char(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

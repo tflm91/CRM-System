@@ -6,9 +6,9 @@ hide methods
 package "Domain model" {
     class Customer {
         id : int PK
-        lastName : char 20
-        firstName : char 20
-        street : char 20
+        lastName : char 40
+        firstName : char 40
+        street : char 40
         houseNumber : int
         postalCode : int
         emailAddress : char 40

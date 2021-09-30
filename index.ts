@@ -27,6 +27,11 @@ router.get("/", (req: express.Request, res: express.Response) => {
     res.sendFile(__dirname + "/views/index.html");
 })
 
+router.get("/index.html", (req: express.Request, res: express.Response) => {
+    res.status(200);
+    res.sendFile(__dirname + "/views/index.html");
+})
+
 router.get("/customer.html", (req: express.Request, res: express.Response) => {
     res.status(200);
     res.sendFile(__dirname + "/views/customer.html");

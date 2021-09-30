@@ -3,13 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Items - CRM-System</title>
+    <script src="/dependency/axios/dist/axios.js"></script>
+    <script type="module" src="/res/scripts/item.js"></script>
 </head>
 <body>
-<a href="">Home</a>
+<a href="index.html">Home</a>
 <a href="customer.html">Customers</a>
 <a href="item.html">Items</a>
 <a href="special-offer.html">Special offers</a>
 <a href="purchase.html">Purchases</a>
 <h1>Items</h1>
+<noscript>Please enable JavaScript, otherwise the application will not work. </noscript>
+<p id="delete-error"></p>
+<button id="new-button">+</button>
+<table id="items">
+    <caption hidden>Items</caption>
+    <thead>
+    <tr>
+        <th id="id">ID</th>
+        <th id="name">Name</th>
+        <th id="quantity">Quantity</th>
+        <th id="basePrice">Base price</th>
+        <th id="options">Options</th>
+    </tr>
+    </thead>
+</table>
+<p id="error"></p>
+<form id="new-form" hidden>
+    <h2>Insert new item</h2>
+    <p><label>Name: <input type="text" name="name"></label></p>
+    <p><label>Quantity: <input type="number" min="0" name="quantity"></label></p>
+    <p><label>Base Price: <input type="number" min="0.01" step="0.01" name="basePrice"></label></p>
+    <p>
+        <input type="submit" value="Save">
+        <button id="new-cancel">Cancel</button>
+    </p>
+</form>
+<form id="edit-form" hidden>
+    <h2>Edit item</h2>
+    <p></p>
+    <p><label>Name: <input type="text" name="name"></label></p>
+    <p><label>Quantity: <input type="number" min="0" name="quantity"></label></p>
+    <p><label>Base price: <input type="number" min="0.01" step="0.01" name="basePrice"></label></p>
+    <p>
+        <input type="submit" value="Save">
+        <button id="edit-cancel">Cancel</button>
+    </p>
+</form>
 </body>
 </html>

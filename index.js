@@ -22,6 +22,10 @@ router.get("/", function (req, res) {
     res.status(200);
     res.sendFile(__dirname + "/views/index.html");
 });
+router.get("/index.html", function (req, res) {
+    res.status(200);
+    res.sendFile(__dirname + "/views/index.html");
+});
 router.get("/customer.html", function (req, res) {
     res.status(200);
     res.sendFile(__dirname + "/views/customer.html");

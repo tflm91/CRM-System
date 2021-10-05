@@ -64,7 +64,7 @@ CREATE TABLE `Item` (
   `basePrice` decimal(6,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
------------------------------
+-- --------------------------------------------------------
 
 --
 -- Tabellenstruktur für Tabelle `Purchase`

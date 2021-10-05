@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
             value.data.forEach(function (item) {
                 var tableRow = document.createElement("tr");
                 tableRow.setAttribute("id", "/customer/" + item.id);
+                itemTable.appendChild(tableRow);
                 var idCell = document.createElement("td");
                 idCell.innerText = item.id;
                 var nameCell = document.createElement("td");
@@ -60,9 +61,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     error.innerText = "";
                     newForm.hidden = true;
                     editForm.hidden = true;
-                    axios_1.default.delete("/item/" + item.id).then(function () {
-                        itemTable.removeChild(tableRow);
+                    axios_1.default.delete("/item/" + item.id).then(function (evt) {
+                        getItems();
                     }).catch(function (err) {
+                        console.log(err);
                         deleteError.innerText = "Error: This item still has special offers or purchases";
                     });
                 });
@@ -111,7 +113,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 tableRow.appendChild(quantityCell);
                 tableRow.appendChild(basePriceCell);
                 tableRow.appendChild(optionCell);
-                itemTable.appendChild(tableRow);
             });
         })).catch(function (err) {
             console.log(err);

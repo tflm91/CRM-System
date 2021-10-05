@@ -76,8 +76,8 @@ document.addEventListener("DOMContentLoaded", () => {
                newForm.hidden = true;
                editForm.hidden = true;
                axios.delete("/customer/" + customer.id).then(() => {
-                  customerTable.removeChild(tableRow);
-               }).catch((err) => {0
+                  getCustomers();
+               }).catch((err) => {
                   deleteError.innerText = "Error: This customer still has purchases";
                });
             });

@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
             value.data.forEach(item => {
                 const tableRow: HTMLElement = document.createElement("tr");
                 tableRow.setAttribute("id", "/customer/" + item.id)
+                itemTable.appendChild(tableRow);
                 const idCell: HTMLElement = document.createElement("td");
                 idCell.innerText = item.id;
                 const nameCell: HTMLElement = document.createElement("td");
@@ -62,9 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     error.innerText = "";
                     newForm.hidden = true;
                     editForm.hidden = true;
-                    axios.delete("/item/" + item.id).then(() => {
-                        itemTable.removeChild(tableRow);
+                    axios.delete("/item/" + item.id).then((evt) => {
+                        getItems();
                     }).catch((err) => {
+                        console.log(err);
                         deleteError.innerText = "Error: This item still has special offers or purchases";
                     });
                 });
@@ -122,7 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 tableRow.appendChild(quantityCell);
                 tableRow.appendChild(basePriceCell);
                 tableRow.appendChild(optionCell);
-                itemTable.appendChild(tableRow);
             });
         })).catch((err) => {
             console.log(err);

@@ -282,6 +282,10 @@ router.get("/special-offer", function (req, res) {
         }
         else {
             res.status(200);
+            result.forEach(function (specialOffer) {
+                specialOffer.begin.setDate(specialOffer.begin.getDate() + 1);
+                specialOffer.expiration.setDate(specialOffer.expiration.getDate() + 1);
+            });
             res.json(result);
         }
     });

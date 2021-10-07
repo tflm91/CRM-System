@@ -313,6 +313,10 @@ router.get("/special-offer", (req: express.Request, res: express.Response) => {
             res.sendStatus(500);
         } else {
             res.status(200);
+            result.forEach(specialOffer => { //for some reason, the dates are decremented in SQL-Select. Therefore, I have to increment it again.
+                specialOffer.begin.setDate(specialOffer.begin.getDate() + 1);
+                specialOffer.expiration.setDate(specialOffer.expiration.getDate() + 1);
+            })
             res.json(result);
         }
     })

@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from "axios";
+//import axios, {AxiosResponse} from "axios";
 
 document.addEventListener("DOMContentLoaded", () => {
     const newButton: HTMLButtonElement = document.getElementById("new-button") as HTMLButtonElement;
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         getItems();
                     }).catch((err) => {
                         console.log(err);
-                        deleteError.innerText = "Error: This item still has special offers or purchases";
+                        deleteError.innerText = "This item still has special offers or purchases";
                     });
                 });
                 const addPiecesButton: HTMLButtonElement = document.createElement("button");

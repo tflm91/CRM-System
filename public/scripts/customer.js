@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var axios_1 = require("axios");
+//import axios, {AxiosResponse} from "axios";
 document.addEventListener("DOMContentLoaded", function () {
     var newButton = document.getElementById("new-button");
     var deleteError = document.getElementById("delete-error");
@@ -24,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
         while (customerTable.children.length > 2) {
             customerTable.removeChild(customerTable.children[2]);
         }
-        axios_1.default.get("/customer").then((function (value) {
+        axios.get("/customer").then((function (value) {
             value.data.forEach(function (customer) {
                 var tableRow = document.createElement("tr");
                 tableRow.setAttribute("id", "/customer/" + customer.id);
@@ -73,10 +71,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     error.innerText = "";
                     newForm.hidden = true;
                     editForm.hidden = true;
-                    axios_1.default.delete("/customer/" + customer.id).then(function () {
+                    axios.delete("/customer/" + customer.id).then(function () {
                         getCustomers();
                     }).catch(function (err) {
-                        deleteError.innerText = "Error: This customer still has purchases";
+                        deleteError.innerText = "This customer still has purchases";
                     });
                 });
                 optionCell.appendChild(editButton);
@@ -113,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
             error.innerText = "Please fill in all fields. ";
         }
         else {
-            axios_1.default.post("/customer", {
+            axios.post("/customer", {
                 "lastName": data.get("lastName"),
                 "firstName": data.get("firstName"),
                 "street": data.get("street"),
@@ -152,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
             error.innerText = "Please fill in all fields. ";
         }
         else {
-            axios_1.default.put(editId, {
+            axios.put(editId, {
                 "lastName": data.get("lastName"),
                 "firstName": data.get("firstName"),
                 "street": data.get("street"),

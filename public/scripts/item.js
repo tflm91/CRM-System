@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var axios_1 = require("axios");
+//import axios, {AxiosResponse} from "axios";
 document.addEventListener("DOMContentLoaded", function () {
     var newButton = document.getElementById("new-button");
     var deleteError = document.getElementById("delete-error");
@@ -24,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
         while (itemTable.children.length > 2) {
             itemTable.removeChild(itemTable.children[2]);
         }
-        axios_1.default.get("/item").then((function (value) {
+        axios.get("/item").then((function (value) {
             value.data.forEach(function (item) {
                 var tableRow = document.createElement("tr");
                 tableRow.setAttribute("id", "/customer/" + item.id);
@@ -61,11 +59,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     error.innerText = "";
                     newForm.hidden = true;
                     editForm.hidden = true;
-                    axios_1.default.delete("/item/" + item.id).then(function (evt) {
+                    axios.delete("/item/" + item.id).then(function (evt) {
                         getItems();
                     }).catch(function (err) {
                         console.log(err);
-                        deleteError.innerText = "Error: This item still has special offers or purchases";
+                        deleteError.innerText = "This item still has special offers or purchases";
                     });
                 });
                 var addPiecesButton = document.createElement("button");
@@ -93,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         evt.stopPropagation();
                         var data = new FormData(addPiecesForm);
                         var newValue = Number(data.get("addedQuantity")) + Number(item.quantity);
-                        axios_1.default.put("/item/" + item.id, {
+                        axios.put("/item/" + item.id, {
                             "name": item.name,
                             "quantity": newValue,
                             "basePrice": item.basePrice
@@ -134,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
             error.innerText = "Please fill in all fields. ";
         }
         else {
-            axios_1.default.post("/item", {
+            axios.post("/item", {
                 "name": data.get("name"),
                 "quantity": data.get("quantity"),
                 "basePrice": data.get("basePrice")
@@ -168,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
             error.innerText = "Please fill in all fields. ";
         }
         else {
-            axios_1.default.put(editId, {
+            axios.put(editId, {
                 "name": data.get("name"),
                 "quantity": data.get("quantity"),
                 "basePrice": data.get("basePrice"),

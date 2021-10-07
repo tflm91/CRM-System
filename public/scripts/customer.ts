@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from "axios";
+//import axios, {AxiosResponse} from "axios";
 
 document.addEventListener("DOMContentLoaded", () => {
    const newButton: HTMLButtonElement = document.getElementById("new-button") as HTMLButtonElement;
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
                axios.delete("/customer/" + customer.id).then(() => {
                   getCustomers();
                }).catch((err) => {
-                  deleteError.innerText = "Error: This customer still has purchases";
+                  deleteError.innerText = "This customer still has purchases";
                });
             });
             optionCell.appendChild(editButton);

@@ -1,6 +1,7 @@
 //import axios, {AxiosResponse} from "axios";
 
 document.addEventListener("DOMContentLoaded", () => {
+    const logout: HTMLAnchorElement = document.getElementById("logout") as HTMLAnchorElement;
     const newButton: HTMLButtonElement = document.getElementById("new-button") as HTMLButtonElement;
     const deleteError: HTMLElement = document.getElementById("delete-error");
     const specialOfferTable: HTMLTableElement = document.getElementById("special-offers") as HTMLTableElement;
@@ -11,6 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const editCancel: HTMLButtonElement = document.getElementById("edit-cancel") as HTMLButtonElement;
     const editForm: HTMLFormElement = document.getElementById("edit-form") as HTMLFormElement;
     let editId: string = "";
+
+    logout.addEventListener("click", evt => {
+        evt.preventDefault();
+        evt.stopPropagation();
+        axios.post("logout").then(() => {
+            window.location.href = "logout.html"
+        }).catch(console.log);
+    })
 
     function initializeSelect(element: HTMLSelectElement, defaultOption: number | null) {
         while(element.children.length > 0) {

@@ -1,5 +1,6 @@
 //import axios, {AxiosResponse} from "axios";
 document.addEventListener("DOMContentLoaded", function () {
+    var logout = document.getElementById("logout");
     var newButton = document.getElementById("new-button");
     var deleteError = document.getElementById("delete-error");
     var specialOfferTable = document.getElementById("special-offers");
@@ -10,6 +11,13 @@ document.addEventListener("DOMContentLoaded", function () {
     var editCancel = document.getElementById("edit-cancel");
     var editForm = document.getElementById("edit-form");
     var editId = "";
+    logout.addEventListener("click", function (evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        axios.post("logout").then(function () {
+            window.location.href = "logout.html";
+        }).catch(console.log);
+    });
     function initializeSelect(element, defaultOption) {
         while (element.children.length > 0) {
             element.removeChild(element.children[0]);

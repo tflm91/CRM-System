@@ -133,8 +133,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.get("expiration") < data.get("begin")) {
                 error.innerText = "Special offer expires before it begins. ";
             }
-            console.log(data.get("begin"));
-            console.log(data.get("expiration"));
             axios.post("/special-offer", {
                 "item": data.get("item"),
                 "quantity": data.get("quantity"),

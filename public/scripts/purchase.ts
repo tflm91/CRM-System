@@ -1,9 +1,9 @@
-//import axios, {AxiosResponse} from "axios";
+//import axios from "axios";
 
 document.addEventListener("DOMContentLoaded", () => {
     const newButton: HTMLButtonElement = document.getElementById("new-button") as HTMLButtonElement;
     const deleteError: HTMLElement = document.getElementById("delete-error");
-    const specialOfferTable: HTMLTableElement = document.getElementById("special-offers") as HTMLTableElement;
+    const purchaseTable: HTMLTableElement = document.getElementById("purchases") as HTMLTableElement;
     const error: HTMLElement = document.getElementById("error");
     const newForm: HTMLFormElement = document.getElementById("new-form") as HTMLFormElement;
     const newCancel: HTMLButtonElement = document.getElementById("new-cancel") as HTMLButtonElement;
@@ -12,29 +12,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const editForm: HTMLFormElement = document.getElementById("edit-form") as HTMLFormElement;
     let editId: string = "";
 
-    function initializeSelect(element: HTMLSelectElement, defaultOption: number | null) {
-        while(element.children.length > 0) {
-            element.removeChild(element.children[0]);
-        }
-        axios.get("/item").then(value => {
-            if(defaultOption !== undefined) {
-                const defaultItem = value.data.find(it => it.id === defaultOption)
-                const option: HTMLOptionElement = document.createElement("option");
-                option.setAttribute("value", defaultItem.id);
-                option.innerText = defaultItem.name;
-                element.appendChild(option);
-                value.data = value.data.filter(it => it.id !== defaultOption);
+    function setOptionContent(resource: string, value: any): string {
+        switch (resource) {
+            case "item": {
+                return value.name;
             }
-            value.data.forEach(item => {
-                const option: HTMLOptionElement = document.createElement("option");
-                option.setAttribute("value", item.id);
-                option.innerText = item.name;
-                element.appendChild(option);
-            })
-        }).catch((err) => {
-            console.log(err);
-        })
+            case "customer": {
+                return value.firstName + " " + value.lastName;
+            }
+        }
     }
+
+    function initializeSelect(element: HTMLSelectElement, resource: string, defaultOption: number | null) {
+        while(element.options.length > 0) {
+            element.remove(0);
+        }
+
+        axios.get(resource).then(value => {
+            value.data.forEach(it => {
+                element.add(new Option(setOptionContent(resource, it), it.id, it.id === defaultOption, it.id === defaultOption));
+            })
+        })
+     }
 
     newButton.addEventListener("click", () => {
         deleteError.innerText = "";
@@ -43,37 +42,48 @@ document.addEventListener("DOMContentLoaded", () => {
         editForm.hidden = true;
         newForm.hidden = false;
         newForm.reset();
-        initializeSelect(newForm.children[1].children[0].children[0] as HTMLSelectElement, undefined);
+        initializeSelect(newForm.children[1].children[0].children[0] as HTMLSelectElement, "customer", undefined);
+        initializeSelect(newForm.children[2].children[0].children[0] as HTMLSelectElement, "item", undefined);
     });
 
-    function getSpecialOffers() {
-        while(specialOfferTable.children.length > 2) {
-            specialOfferTable.removeChild(specialOfferTable.children[2]);
+    function formatPrice(price: string): string {
+        const dot: number = price.indexOf(".");
+        if(dot == -1)
+            return price + "." + "0".repeat(2);
+        else {
+            const digits = price.length - dot - 1;
+            return price + "0".repeat(2 - digits);
+        }
+    }
+
+    function getPurchases() {
+        while(purchaseTable.children.length > 2) {
+            purchaseTable.removeChild(purchaseTable.children[2]);
         }
 
-        axios.get("/special-offer").then((value => {
-            value.data.forEach(specialOffer => {
+        axios.get("/purchase").then((value => {
+            value.data.forEach(purchase => {
                 const tableRow: HTMLElement = document.createElement("tr");
-                tableRow.setAttribute("id", "/special-offer/" + specialOffer.id)
+                tableRow.setAttribute("id", "/purchase/" + purchase.id)
                 const idCell: HTMLElement = document.createElement("td");
-                idCell.innerText = specialOffer.id;
+                idCell.innerText = purchase.id;
+                const customerCell: HTMLElement = document.createElement("td");
+                axios.get("/customer").then(value => {
+                    const customer = value.data.find(it => it.id == purchase.customer);
+                    customerCell.innerText = customer.firstName + " " + customer.lastName;
+                }).catch(console.log);
                 const itemCell: HTMLElement = document.createElement("td");
-                axios.get("/item/").then((value) => {
-                    const item = value.data.find((it) => it.id == specialOffer.item);
+                axios.get("/item").then((value) => {
+                    const item = value.data.find((it) => it.id == purchase.item);
                     itemCell.innerText = item.name;
-                }).catch((err) => {
-                    console.log(err);
-                })
+                }).catch(console.log);
                 const quantityCell: HTMLElement = document.createElement("td");
-                quantityCell.innerText = specialOffer.quantity;
+                quantityCell.innerText = purchase.quantity;
+                const dateCell: HTMLElement = document.createElement("td");
+                const date = new Date(purchase.date).toISOString().slice(0, 10);
+                dateCell.innerText = date;
                 const priceCell: HTMLElement = document.createElement("td");
-                priceCell.innerText = specialOffer.price;
-                const beginCell: HTMLElement = document.createElement("td");
-                const begin = new Date(specialOffer.begin).toISOString().slice(0, 10);
-                beginCell.innerText = begin;
-                const expirationCell: HTMLElement = document.createElement("td");
-                const expiration = new Date(specialOffer.expiration).toISOString().slice(0, 10);
-                expirationCell.innerText = expiration;
+                priceCell.innerText = formatPrice(purchase.price.toString());
                 const optionCell: HTMLElement = document.createElement("td");
                 const editButton: HTMLButtonElement = document.createElement("button") as HTMLButtonElement;
                 editButton.innerText = "Edit";
@@ -83,13 +93,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     newForm.hidden = true;
                     editForm.hidden = false;
                     editForm.reset();
-                    editId = "/special-offer/" + specialOffer.id;
-                    editForm.children[1].innerHTML = "ID: " + specialOffer.id;
-                    initializeSelect(editForm.children[2].children[0].children[0] as HTMLSelectElement, specialOffer.item);
-                    editForm.children[3].children[0].children[0].setAttribute("value", specialOffer.quantity);
-                    editForm.children[4].children[0].children[0].setAttribute("value", specialOffer.price);
-                    editForm.children[5].children[0].children[0].setAttribute("value", begin);
-                    editForm.children[6].children[0].children[0].setAttribute("value", expiration);
+                    editId = "/purchase/" + purchase.id;
+                    editForm.children[1].innerHTML = "ID: " + purchase.id;
+                    initializeSelect(editForm.children[2].children[0].children[0] as HTMLSelectElement, "customer", purchase.customer);
+                    initializeSelect(editForm.children[3].children[0].children[0] as HTMLSelectElement, "item", purchase.item);
+                    editForm.children[4].children[0].children[0].setAttribute("value", purchase.quantity);
+                    editForm.children[5].children[0].children[0].setAttribute("value", date);
                 });
                 const deleteButton: HTMLButtonElement = document.createElement("button") as HTMLButtonElement;
                 deleteButton.innerText = "Delete";
@@ -98,29 +107,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     error.innerText = "";
                     newForm.hidden = true;
                     editForm.hidden = true;
-                    axios.delete("/special-offer/" + specialOffer.id).then(() => {
-                        getSpecialOffers();
-                    }).catch(() => {
-                        deleteError.innerText = "Special offer not expired yet";
-                    });
+                    axios.delete("/purchase/" + purchase.id).then(() => {
+                        getPurchases();
+                    }).catch(console.log);
                 });
                 optionCell.appendChild(editButton);
                 optionCell.appendChild(deleteButton);
                 tableRow.appendChild(idCell);
+                tableRow.appendChild(customerCell);
                 tableRow.appendChild(itemCell);
                 tableRow.appendChild(quantityCell);
+                tableRow.appendChild(dateCell);
                 tableRow.appendChild(priceCell);
-                tableRow.appendChild(beginCell);
-                tableRow.appendChild(expirationCell);
                 tableRow.appendChild(optionCell);
-                specialOfferTable.appendChild(tableRow);
+                purchaseTable.appendChild(tableRow);
             });
-        })).catch((err) => {
-            console.log(err);
-        });
+        })).catch(console.log);
     }
 
-    getSpecialOffers();
+    getPurchases();
 
     newForm.addEventListener("submit", (evt:Event) => {
         evt.preventDefault();
@@ -136,22 +141,22 @@ document.addEventListener("DOMContentLoaded", () => {
         if(fInput) {
             error.innerText = "Please fill in all fields. ";
         } else {
-            if(data.get("expiration") < data.get("begin")) {
-                error.innerText = "Special offer expires before it begins. "
+            if(new Date(data.get("date").toString()) > new Date()) {
+                error.innerText = "Date is in future. ";
+            } else {
+                axios.post("/purchase", {
+                    "customer": data.get("customer"),
+                    "item": data.get("item"),
+                    "quantity": data.get("quantity"),
+                    "date": data.get("date")
+                }).then(() => {
+                    newForm.hidden = true;
+                    newForm.reset();
+                    getPurchases();
+                }).catch(() => {
+                    error.innerText = "There are not enough pieces in stock. ";
+                })
             }
-            axios.post("/special-offer", {
-                "item":data.get("item"),
-                "quantity":data.get("quantity"),
-                "price":data.get("price"),
-                "begin":data.get("begin"),
-                "expiration":data.get("expiration")
-            }).then(() => {
-                newForm.hidden = true;
-                newForm.reset();
-                getSpecialOffers();
-            }).catch(() => {
-                error.innerText = "Special offer is too expensive."
-            })
         }
     })
 
@@ -177,19 +182,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if(fInput) {
             error.innerText = "Please fill in all fields. ";
         } else {
-            if(data.get("expiration") < data.get("begin")) {
-                error.innerText = "Special offer expires before it begins. ";
+            if(new Date(data.get("date").toString()) > new Date()) {
+                error.innerText = "Date is in future. ";
             } else {
                 axios.put(editId, {
+                    "customer":data.get("customer"),
                     "item": data.get("item"),
                     "quantity": data.get("quantity"),
-                    "price": data.get("price"),
-                    "begin": data.get("begin"),
-                    "expiration": data.get("expiration")
+                    "date": data.get("date")
                 }).then(() => {
                     editForm.hidden = true;
                     editForm.reset();
-                    getSpecialOffers();
+                    getPurchases();
                 }).catch((err) => {
                     console.log(err);
                 })

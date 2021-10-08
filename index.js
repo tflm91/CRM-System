@@ -478,6 +478,8 @@ router.get("/purchase", function (req, res) {
                         }
                         else {
                             purchases.forEach(function (value) {
+                                //for some reason, the dates are decremented in SQL-Select. Therefore, I have to increment it again.
+                                value.date.setDate(value.date.getDate() + 1);
                                 purchasePrice(value, specialOffers, items);
                             });
                             res.status(200);

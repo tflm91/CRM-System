@@ -501,6 +501,8 @@ router.get("/purchase", (req: express.Request, res: express.Response) => {
                             res.sendStatus(500);
                         } else {
                             purchases.forEach((value: IPurchase) => {
+                                //for some reason, the dates are decremented in SQL-Select. Therefore, I have to increment it again.
+                                value.date.setDate(value.date.getDate() + 1);
                                 purchasePrice(value, specialOffers, items);
                             })
                             res.status(200);

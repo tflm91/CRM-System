@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 phoneCell.innerText = customer.phoneNumber;
                 var optionCell = document.createElement("td");
                 var editButton = document.createElement("button");
-                editButton.innerText = "Edit";
+                editButton.innerHTML = "Edit";
                 editButton.addEventListener("click", function () {
                     deleteError.innerText = "";
                     error.innerText = "";

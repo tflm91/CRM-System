@@ -92,13 +92,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     const addPiecesForm: HTMLFormElement = document.createElement("form");
                     const addPiecesInput: HTMLInputElement = document.createElement("input");
-                    const addPiecesSubmit: HTMLInputElement = document.createElement("input");
+                    const addPiecesSubmit: HTMLButtonElement = document.createElement("button");
 
                     addPiecesInput.setAttribute("type", "number");
                     addPiecesInput.setAttribute("name", "addedQuantity")
                     addPiecesInput.setAttribute("min", "0");
                     addPiecesInput.setAttribute("value", "0");
                     addPiecesSubmit.setAttribute("type", "submit");
+                    addPiecesSubmit.innerText = "Save";
 
 
                     addPiecesForm.appendChild(addPiecesInput);

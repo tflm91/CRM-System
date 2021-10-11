@@ -86,12 +86,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     addPiecesButton.hidden = true;
                     var addPiecesForm = document.createElement("form");
                     var addPiecesInput = document.createElement("input");
-                    var addPiecesSubmit = document.createElement("input");
+                    var addPiecesSubmit = document.createElement("button");
                     addPiecesInput.setAttribute("type", "number");
                     addPiecesInput.setAttribute("name", "addedQuantity");
                     addPiecesInput.setAttribute("min", "0");
                     addPiecesInput.setAttribute("value", "0");
                     addPiecesSubmit.setAttribute("type", "submit");
+                    addPiecesSubmit.innerText = "Save";
                     addPiecesForm.appendChild(addPiecesInput);
                     addPiecesForm.appendChild(addPiecesSubmit);
                     addPiecesForm.addEventListener("submit", function (evt) {

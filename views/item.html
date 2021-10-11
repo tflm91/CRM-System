@@ -7,6 +7,7 @@
     <title>Items - CRM-System</title>
     <script src="/dependency/axios/dist/axios.js"></script>
     <script type="module" src="/res/scripts/item.js"></script>
+    <link href="/res/styles.css" rel="stylesheet">
 </head>
 <body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ" crossorigin="anonymous"></script>
@@ -38,43 +39,47 @@
             </ul>
         </div>
     </div>
-</nav><h1>Items</h1>
-<noscript>Please enable JavaScript, otherwise the application will not work. </noscript>
-<p id="delete-error"></p>
-<button id="new-button">+</button>
-<table id="items">
-    <caption hidden>Items</caption>
-    <thead>
-    <tr>
-        <th id="id">ID</th>
-        <th id="name">Name</th>
-        <th id="quantity">Quantity</th>
-        <th id="basePrice">Base price</th>
-        <th id="options">Options</th>
-    </tr>
-    </thead>
-</table>
-<p id="error"></p>
-<form id="new-form" hidden>
-    <h2>Insert new item</h2>
-    <p><label>Name: <input type="text" name="name"></label></p>
-    <p><label>Quantity: <input type="number" min="0" name="quantity"></label></p>
-    <p><label>Base Price: <input type="number" min="0.01" step="0.01" name="basePrice"></label></p>
-    <p>
-        <input type="submit" value="Save">
-        <button id="new-cancel">Cancel</button>
-    </p>
-</form>
-<form id="edit-form" hidden>
-    <h2>Edit item</h2>
-    <p></p>
-    <p><label>Name: <input type="text" name="name"></label></p>
-    <p><label>Quantity: <input type="number" min="0" name="quantity"></label></p>
-    <p><label>Base price: <input type="number" min="0.01" step="0.01" name="basePrice"></label></p>
-    <p>
-        <input type="submit" value="Save">
-        <button id="edit-cancel">Cancel</button>
-    </p>
-</form>
+</nav>
+<div class="container-fluid">
+    <img src="/res/images/shutterstock_258562583_bb.jpg" alt="items" class="img-fluid">
+    <h1>Items</h1>
+    <noscript class="error">Please enable JavaScript, otherwise the application will not work. </noscript>
+    <p id="delete-error" class="error"></p>
+    <button id="new-button" class="btn btn-primary">+</button>
+    <table id="items" class="table">
+        <caption hidden>Items</caption>
+        <thead>
+        <tr>
+            <th id="id" scope="col">ID</th>
+            <th id="name" scope="col">Name</th>
+            <th id="quantity" scope="col">Quantity</th>
+            <th id="basePrice" scope="col">Base price</th>
+            <th id="options" scope="col">Options</th>
+        </tr>
+        </thead>
+    </table>
+    <p id="error" class="error"></p>
+    <form id="new-form" hidden>
+        <h2>Insert new item</h2>
+        <p><label>Name: <input type="text" name="name"></label></p>
+        <p><label>Quantity: <input type="number" min="0" name="quantity"></label></p>
+        <p><label>Base Price: <input type="number" min="0.01" step="0.01" name="basePrice"></label></p>
+        <p>
+            <button type="submit" class="btn btn-success">Save</button>
+            <button id="new-cancel" class="btn btn-danger">Cancel</button>
+        </p>
+    </form>
+    <form id="edit-form" hidden>
+        <h2>Edit item</h2>
+        <p></p>
+        <p><label>Name: <input type="text" name="name"></label></p>
+        <p><label>Quantity: <input type="number" min="0" name="quantity"></label></p>
+        <p><label>Base price: <input type="number" min="0.01" step="0.01" name="basePrice"></label></p>
+        <p>
+            <button type="submit" class="btn btn-success">Save</button>
+            <button id="edit-cancel" class="btn btn-danger">Cancel</button>
+        </p>
+    </form>
+</div>
 </body>
 </html>

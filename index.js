@@ -39,7 +39,7 @@ router.post("/login", function (req, res) {
     var username = req.body.username;
     var password = req.body.password;
     if (username !== undefined && password !== undefined) {
-        connection.query("SELECT * FROM accountmanager WHERE username = ? AND passwd = ?", [username, password], function (err, result) {
+        connection.query("SELECT * FROM accountManager WHERE username = ? AND passwd = ?", [username, password], function (err, result) {
             if (err !== null) {
                 console.log(err);
                 res.sendStatus(500);
@@ -115,18 +115,36 @@ router.get("/purchase.html", function (req, res) {
         res.status(200);
     res.sendFile(__dirname + "/views/purchase.html");
 });
+var Customer = /** @class */ (function () {
+    function Customer(req) {
+        this.lastName = req.body.lastName;
+        this.firstName = req.body.firstName;
+        this.street = req.body.street;
+        this.houseNumber = req.body.houseNumber;
+        this.postalCode = req.body.postalCode;
+        this.city = req.body.city;
+        this.emailAddress = req.body.emailAddress;
+        this.phoneNumber = req.body.phoneNumber;
+    }
+    Customer.prototype.validate = function () {
+        return this.lastName !== undefined
+            && this.firstName !== undefined
+            && this.street !== undefined
+            && this.houseNumber !== undefined
+            && !isNaN(this.houseNumber)
+            && this.postalCode !== undefined
+            && !isNaN(this.postalCode)
+            && this.city !== undefined
+            && this.emailAddress !== undefined
+            && this.phoneNumber !== undefined;
+    };
+    return Customer;
+}());
 router.post("/customer", function (req, res) {
     if (req.session.loginID !== undefined) {
-        var lastName = req.body.lastName;
-        var firstName = req.body.firstName;
-        var street = req.body.street;
-        var houseNumber = Number(req.body.houseNumber);
-        var postalCode = Number(req.body.postalCode);
-        var city = req.body.city;
-        var emailAddress = req.body.emailAddress;
-        var phoneNumber = req.body.phoneNumber;
-        if (lastName !== undefined && firstName !== undefined && street !== undefined && houseNumber !== undefined && !isNaN(houseNumber) && postalCode !== undefined && !isNaN(postalCode) && city !== undefined && emailAddress !== undefined && phoneNumber !== undefined) {
-            connection.query("INSERT INTO Customer (lastName, firstName, street, houseNumber, postalCode, city, emailAddress, phoneNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [lastName, firstName, street, houseNumber, postalCode, city, emailAddress, phoneNumber], function (err, result) {
+        var customer = new Customer(req);
+        if (customer.validate()) {
+            connection.query("INSERT INTO Customer (lastName, firstName, street, houseNumber, postalCode, city, emailAddress, phoneNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [customer.lastName, customer.firstName, customer.street, customer.houseNumber, customer.postalCode, customer.city, customer.emailAddress, customer.phoneNumber], function (err, result) {
                 if (err != null) {
                     console.log(err);
                     res.sendStatus(500);
@@ -165,16 +183,9 @@ router.get("/customer", function (req, res) {
 router.put("/customer/:id", function (req, res) {
     if (req.session.loginID !== undefined) {
         var id = req.params.id;
-        var lastName = req.body.lastName;
-        var firstName = req.body.firstName;
-        var street = req.body.street;
-        var houseNumber = Number(req.body.houseNumber);
-        var postalCode = Number(req.body.postalCode);
-        var city = req.body.city;
-        var emailAddress = req.body.emailAddress;
-        var phoneNumber = req.body.phoneNumber;
-        if (lastName !== undefined && firstName !== undefined && street !== undefined && houseNumber !== undefined && !isNaN(houseNumber) && postalCode !== undefined && !isNaN(postalCode) && city !== undefined && emailAddress !== undefined && phoneNumber !== undefined) {
-            connection.query("UPDATE Customer SET lastName = ?, firstName = ?, street = ?, houseNumber = ?, postalCode = ?, city = ?, emailAddress = ?, phoneNumber = ? WHERE id = ?", [lastName, firstName, street, houseNumber, postalCode, city, emailAddress, phoneNumber, id], function (err, result) {
+        var customer = new Customer(req);
+        if (customer.validate()) {
+            connection.query("UPDATE Customer SET lastName = ?, firstName = ?, street = ?, houseNumber = ?, postalCode = ?, city = ?, emailAddress = ?, phoneNumber = ? WHERE id = ?", [customer.lastName, customer.firstName, customer.street, customer.houseNumber, customer.postalCode, customer.city, customer.emailAddress, customer.phoneNumber, id], function (err, result) {
                 if (err != null) {
                     console.log(err);
                     res.status(400);
@@ -334,6 +345,18 @@ router.delete("/item/:id", function (req, res) {
         res.sendStatus(401);
     }
 });
+function validateSpecialOffer(item, quantity, price, begin, expiration) {
+    return item !== undefined
+        && !isNaN(item)
+        && quantity !== undefined
+        && !isNaN(quantity)
+        && quantity >= 1
+        && price !== undefined
+        && !isNaN(price)
+        && price >= 0.01
+        && (new Date(begin) !== undefined)
+        && (new Date(expiration) !== undefined);
+}
 router.post("/special-offer/", function (req, res) {
     if (req.session.loginID !== undefined) {
         var item_2 = Number(req.body.item);
@@ -341,7 +364,7 @@ router.post("/special-offer/", function (req, res) {
         var price_1 = Number(req.body.price);
         var begin_1 = new Date(req.body.begin);
         var expiration_1 = new Date(req.body.expiration);
-        if (item_2 !== undefined && !isNaN(item_2) && quantity_1 !== undefined && !isNaN(quantity_1) && quantity_1 >= 1 && price_1 !== undefined && !isNaN(price_1) && price_1 >= 0.01 && new Date(begin_1) !== undefined && new Date(expiration_1) !== undefined) {
+        if (validateSpecialOffer(item_2, quantity_1, price_1, begin_1, expiration_1)) {
             connection.query("SELECT * FROM Item WHERE id = ?", [item_2], function (err, result) {
                 if (err !== null) {
                     console.log(err);
@@ -418,7 +441,7 @@ router.put("/special-offer/:id", function (req, res) {
         var price_2 = Number(req.body.price);
         var begin_2 = new Date(req.body.begin);
         var expiration_2 = new Date(req.body.expiration);
-        if (item_3 !== undefined && !isNaN(item_3) && quantity_2 !== undefined && !isNaN(quantity_2) && quantity_2 >= 1 && price_2 !== undefined && !isNaN(price_2) && price_2 >= 0.01 && new Date(begin_2) !== undefined && new Date(expiration_2) !== undefined) {
+        if (validateSpecialOffer(item_3, quantity_2, price_2, begin_2, expiration_2)) {
             connection.query("SELECT * FROM Item WHERE id = ?", [item_3], function (err, result) {
                 if (result.length === 0) {
                     res.status(400);
@@ -483,7 +506,7 @@ router.delete("/special-offer/:id", function (req, res) {
                         res.send("Error: Offer not expired yet. ");
                     }
                     else {
-                        connection.query("DELETE FROM SpecialOffer WHERE id = ?", [id_4], function (err1) {
+                        connection.query("DELETE FROM SpecialOffer WHERE id = ?", [id_4], function () {
                             if (err !== null) {
                                 console.log(err);
                                 res.sendStatus(500);

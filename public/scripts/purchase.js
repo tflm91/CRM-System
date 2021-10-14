@@ -206,4 +206,10 @@ document.addEventListener("DOMContentLoaded", function () {
         editForm.hidden = true;
         editForm.reset();
     });
+    editCancel.addEventListener("click", function (evt) {
+        evt.preventDefault();
+        error.innerText = "";
+        editForm.hidden = true;
+        editForm.reset();
+    });
 });

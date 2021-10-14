@@ -1,4 +1,4 @@
-//import axios, {AxiosResponse} from "axios";
+//import axios from "axios";
 document.addEventListener("DOMContentLoaded", function () {
     var logout = document.getElementById("logout");
     var newButton = document.getElementById("new-button");
@@ -175,5 +175,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log(err);
             });
         }
+    });
+    editCancel.addEventListener("click", function (evt) {
+        evt.preventDefault();
+        error.innerText = "";
+        editForm.hidden = true;
+        editForm.reset();
     });
 });

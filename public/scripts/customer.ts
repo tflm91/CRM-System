@@ -1,4 +1,4 @@
-//import axios, {AxiosResponse} from "axios";
+//import axios from "axios";
 
 document.addEventListener("DOMContentLoaded", () => {
    const logout: HTMLAnchorElement = document.getElementById("logout") as HTMLAnchorElement;
@@ -183,4 +183,11 @@ document.addEventListener("DOMContentLoaded", () => {
          })
       }
    })
+
+   editCancel.addEventListener("click", evt => {
+      evt.preventDefault();
+      error.innerText = "";
+      editForm.hidden = true;
+      editForm.reset();
+   });
 });

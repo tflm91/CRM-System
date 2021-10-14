@@ -1,4 +1,4 @@
-//import axios, {AxiosResponse} from "axios";
+//import axios from "axios";
 
 document.addEventListener("DOMContentLoaded", () => {
     const logout: HTMLAnchorElement = document.getElementById("logout") as HTMLAnchorElement;

@@ -188,4 +188,10 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
     });
+    editCancel.addEventListener("click", function (evt) {
+        evt.preventDefault();
+        error.innerText = "";
+        editForm.hidden = true;
+        editForm.reset();
+    });
 });

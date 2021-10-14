@@ -1,4 +1,4 @@
-//import axios, {AxiosResponse} from "axios";
+//import axios from "axios";
 document.addEventListener("DOMContentLoaded", function () {
     var logout = document.getElementById("logout");
     logout.addEventListener("click", function (evt) {

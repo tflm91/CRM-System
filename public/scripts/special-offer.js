@@ -1,4 +1,4 @@
-//import axios, {AxiosResponse} from "axios";
+//import axios from "axios";
 document.addEventListener("DOMContentLoaded", function () {
     var logout = document.getElementById("logout");
     var newButton = document.getElementById("new-button");
@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
     var error = document.getElementById("error");
     var newForm = document.getElementById("new-form");
     var newCancel = document.getElementById("new-cancel");
-    var editSend = document.getElementById("edit-send");
     var editCancel = document.getElementById("edit-cancel");
     var editForm = document.getElementById("edit-form");
     var editId = "";
@@ -123,7 +122,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
     getSpecialOffers();
-    newForm.addEventListener("submit", function (evt) {
+    var Method;
+    (function (Method) {
+        Method[Method["POST"] = 0] = "POST";
+        Method[Method["PUT"] = 1] = "PUT";
+    })(Method || (Method = {}));
+    function formSubmit(evt, form, method, route) {
         evt.preventDefault();
         evt.stopPropagation();
         error.innerText = "";
@@ -141,48 +145,23 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.get("expiration") < data.get("begin")) {
                 error.innerText = "Special offer expires before it begins. ";
             }
-            axios.post("/special-offer", {
-                "item": data.get("item"),
-                "quantity": data.get("quantity"),
-                "price": data.get("price"),
-                "begin": data.get("begin"),
-                "expiration": data.get("expiration")
-            }).then(function () {
-                newForm.hidden = true;
-                newForm.reset();
-                getSpecialOffers();
-            }).catch(function () {
-                error.innerText = "Special offer is too expensive.";
-            });
-        }
-    });
-    newCancel.addEventListener("click", function (evt) {
-        evt.preventDefault();
-        evt.stopPropagation();
-        error.innerText = "";
-        newForm.hidden = true;
-        newForm.reset();
-    });
-    editForm.addEventListener("submit", function (evt) {
-        evt.preventDefault();
-        evt.stopPropagation();
-        error.innerText = "";
-        var data = new FormData(editForm);
-        var fInput = false;
-        data.forEach(function (value) {
-            if (value.toString().trim().length === 0) {
-                fInput = true;
-            }
-        });
-        if (fInput) {
-            error.innerText = "Please fill in all fields. ";
-        }
-        else {
-            if (data.get("expiration") < data.get("begin")) {
-                error.innerText = "Special offer expires before it begins. ";
+            if (method === Method.POST) {
+                axios.post("/special-offer", {
+                    "item": data.get("item"),
+                    "quantity": data.get("quantity"),
+                    "price": data.get("price"),
+                    "begin": data.get("begin"),
+                    "expiration": data.get("expiration")
+                }).then(function () {
+                    newForm.hidden = true;
+                    newForm.reset();
+                    getSpecialOffers();
+                }).catch(function () {
+                    error.innerText = "Special offer is too expensive.";
+                });
             }
             else {
-                axios.put(editId, {
+                axios.put(route, {
                     "item": data.get("item"),
                     "quantity": data.get("quantity"),
                     "price": data.get("price"),
@@ -197,6 +176,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             }
         }
+    }
+    newForm.addEventListener("submit", function (evt) {
+        formSubmit(evt, newForm, Method.POST, "");
+    });
+    newCancel.addEventListener("click", function (evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        error.innerText = "";
+        newForm.hidden = true;
+        newForm.reset();
+    });
+    editForm.addEventListener("submit", function (evt) {
+        formSubmit(evt, editForm, Method.PUT, editId);
     });
     editCancel.addEventListener("click", function (evt) {
         evt.preventDefault();

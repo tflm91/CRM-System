@@ -1,4 +1,4 @@
-//import axios, {AxiosResponse} from "axios";
+//import axios from "axios";
 
 document.addEventListener("DOMContentLoaded", () => {
     const logout: HTMLAnchorElement = document.getElementById("logout") as HTMLAnchorElement;
@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const error: HTMLElement = document.getElementById("error");
     const newForm: HTMLFormElement = document.getElementById("new-form") as HTMLFormElement;
     const newCancel: HTMLButtonElement = document.getElementById("new-cancel") as HTMLButtonElement;
-    const editSend: HTMLButtonElement = document.getElementById("edit-send") as HTMLButtonElement;
     const editCancel: HTMLButtonElement = document.getElementById("edit-cancel") as HTMLButtonElement;
     const editForm: HTMLFormElement = document.getElementById("edit-form") as HTMLFormElement;
     let editId: string = "";
@@ -131,7 +130,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     getSpecialOffers();
 
-    newForm.addEventListener("submit", (evt:Event) => {
+    enum Method {
+        POST, PUT
+    }
+
+    function formSubmit(evt: Event, form: HTMLFormElement, method: Method, route: string) {
         evt.preventDefault();
         evt.stopPropagation();
         error.innerText = "";
@@ -148,48 +151,22 @@ document.addEventListener("DOMContentLoaded", () => {
             if(data.get("expiration") < data.get("begin")) {
                 error.innerText = "Special offer expires before it begins. "
             }
-            axios.post("/special-offer", {
-                "item":data.get("item"),
-                "quantity":data.get("quantity"),
-                "price":data.get("price"),
-                "begin":data.get("begin"),
-                "expiration":data.get("expiration")
-            }).then(() => {
-                newForm.hidden = true;
-                newForm.reset();
-                getSpecialOffers();
-            }).catch(() => {
-                error.innerText = "Special offer is too expensive."
-            })
-        }
-    })
-
-    newCancel.addEventListener("click", (evt: Event) => {
-        evt.preventDefault();
-        evt.stopPropagation();
-        error.innerText = "";
-        newForm.hidden = true;
-        newForm.reset();
-    })
-
-    editForm.addEventListener("submit", (evt: Event) => {
-        evt.preventDefault();
-        evt.stopPropagation();
-        error.innerText = ""
-        const data: FormData = new FormData(editForm);
-        let fInput = false;
-        data.forEach(value => {
-            if(value.toString().trim().length === 0) {
-                fInput = true;
-            }
-        })
-        if(fInput) {
-            error.innerText = "Please fill in all fields. ";
-        } else {
-            if(data.get("expiration") < data.get("begin")) {
-                error.innerText = "Special offer expires before it begins. ";
+            if(method === Method.POST) {
+                axios.post("/special-offer", {
+                    "item":data.get("item"),
+                    "quantity":data.get("quantity"),
+                    "price":data.get("price"),
+                    "begin":data.get("begin"),
+                    "expiration":data.get("expiration")
+                }).then(() => {
+                    newForm.hidden = true;
+                    newForm.reset();
+                    getSpecialOffers();
+                }).catch(() => {
+                    error.innerText = "Special offer is too expensive."
+                })
             } else {
-                axios.put(editId, {
+                axios.put(route, {
                     "item": data.get("item"),
                     "quantity": data.get("quantity"),
                     "price": data.get("price"),
@@ -204,6 +181,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
             }
         }
+    }
+
+    newForm.addEventListener("submit", (evt:Event) => {
+        formSubmit(evt, newForm, Method.POST, "");
+    })
+
+    newCancel.addEventListener("click", (evt: Event) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+        error.innerText = "";
+        newForm.hidden = true;
+        newForm.reset();
+    })
+
+    editForm.addEventListener("submit", (evt: Event) => {
+        formSubmit(evt, editForm, Method.PUT, editId);
     })
 
     editCancel.addEventListener("click", evt => {

@@ -1,4 +1,4 @@
-//import axios, {AxiosResponse} from "axios";
+//import axios from "axios";
 document.addEventListener("DOMContentLoaded", function () {
     var logout = document.getElementById("logout");
     var newButton = document.getElementById("new-button");
@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
     var error = document.getElementById("error");
     var newForm = document.getElementById("new-form");
     var newCancel = document.getElementById("new-cancel");
-    var editSend = document.getElementById("edit-send");
     var editCancel = document.getElementById("edit-cancel");
     var editForm = document.getElementById("edit-form");
     var editId = "";
@@ -67,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     error.innerText = "";
                     newForm.hidden = true;
                     editForm.hidden = true;
-                    axios.delete("/item/" + item.id).then(function (evt) {
+                    axios.delete("/item/" + item.id).then(function () {
                         getItems();
                     }).catch(function (err) {
                         console.log(err);

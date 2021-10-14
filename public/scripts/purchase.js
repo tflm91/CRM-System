@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
     var error = document.getElementById("error");
     var newForm = document.getElementById("new-form");
     var newCancel = document.getElementById("new-cancel");
-    var editSend = document.getElementById("edit-send");
     var editCancel = document.getElementById("edit-cancel");
     var editForm = document.getElementById("edit-form");
     var editId = "";
@@ -125,11 +124,16 @@ document.addEventListener("DOMContentLoaded", function () {
         })).catch(console.log);
     }
     getPurchases();
-    newForm.addEventListener("submit", function (evt) {
+    var Method;
+    (function (Method) {
+        Method[Method["POST"] = 0] = "POST";
+        Method[Method["PUT"] = 1] = "PUT";
+    })(Method || (Method = {}));
+    function formSubmit(evt, form, method, route) {
         evt.preventDefault();
         evt.stopPropagation();
         error.innerText = "";
-        var data = new FormData(newForm);
+        var data = new FormData(form);
         var fInput = false;
         data.forEach(function (value) {
             if (value.toString().trim().length == 0) {
@@ -144,20 +148,39 @@ document.addEventListener("DOMContentLoaded", function () {
                 error.innerText = "Date is in future. ";
             }
             else {
-                axios.post("/purchase", {
-                    "customer": data.get("customer"),
-                    "item": data.get("item"),
-                    "quantity": data.get("quantity"),
-                    "date": data.get("date")
-                }).then(function () {
-                    newForm.hidden = true;
-                    newForm.reset();
-                    getPurchases();
-                }).catch(function () {
-                    error.innerText = "There are not enough pieces in stock. ";
-                });
+                if (method === Method.POST) {
+                    axios.post("/purchase", {
+                        "customer": data.get("customer"),
+                        "item": data.get("item"),
+                        "quantity": data.get("quantity"),
+                        "date": data.get("date")
+                    }).then(function () {
+                        newForm.hidden = true;
+                        newForm.reset();
+                        getPurchases();
+                    }).catch(function () {
+                        error.innerText = "There are not enough pieces in stock. ";
+                    });
+                }
+                else {
+                    axios.put(route, {
+                        "customer": data.get("customer"),
+                        "item": data.get("item"),
+                        "quantity": data.get("quantity"),
+                        "date": data.get("date")
+                    }).then(function () {
+                        newForm.hidden = true;
+                        newForm.reset();
+                        getPurchases();
+                    }).catch(function () {
+                        error.innerText = "There are not enough pieces in stock. ";
+                    });
+                }
             }
         }
+    }
+    newForm.addEventListener("submit", function (evt) {
+        formSubmit(evt, newForm, Method.POST, "");
     });
     newCancel.addEventListener("click", function (evt) {
         evt.preventDefault();
@@ -167,38 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
         newForm.reset();
     });
     editForm.addEventListener("submit", function (evt) {
-        evt.preventDefault();
-        evt.stopPropagation();
-        error.innerText = "";
-        var data = new FormData(editForm);
-        var fInput = false;
-        data.forEach(function (value) {
-            if (value.toString().trim().length === 0) {
-                fInput = true;
-            }
-        });
-        if (fInput) {
-            error.innerText = "Please fill in all fields. ";
-        }
-        else {
-            if (new Date(data.get("date").toString()) > new Date()) {
-                error.innerText = "Date is in future. ";
-            }
-            else {
-                axios.put(editId, {
-                    "customer": data.get("customer"),
-                    "item": data.get("item"),
-                    "quantity": data.get("quantity"),
-                    "date": data.get("date")
-                }).then(function () {
-                    editForm.hidden = true;
-                    editForm.reset();
-                    getPurchases();
-                }).catch(function (err) {
-                    console.log(err);
-                });
-            }
-        }
+        formSubmit(evt, editForm, Method.PUT, editId);
     });
     editCancel.addEventListener("click", function (evt) {
         evt.preventDefault();

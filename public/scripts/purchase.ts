@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const error: HTMLElement = document.getElementById("error");
     const newForm: HTMLFormElement = document.getElementById("new-form") as HTMLFormElement;
     const newCancel: HTMLButtonElement = document.getElementById("new-cancel") as HTMLButtonElement;
-    const editSend: HTMLButtonElement = document.getElementById("edit-send") as HTMLButtonElement;
     const editCancel: HTMLButtonElement = document.getElementById("edit-cancel") as HTMLButtonElement;
     const editForm: HTMLFormElement = document.getElementById("edit-form") as HTMLFormElement;
     let editId: string = "";
@@ -136,11 +135,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     getPurchases();
 
-    newForm.addEventListener("submit", (evt:Event) => {
+    enum Method {
+        POST, PUT
+    }
+
+    function formSubmit(evt: Event, form: HTMLFormElement, method: Method, route: string) {
         evt.preventDefault();
         evt.stopPropagation();
         error.innerText = "";
-        const data: FormData = new FormData(newForm);
+        const data: FormData = new FormData(form);
         let fInput = false;
         data.forEach(value => {
             if(value.toString().trim().length == 0) {
@@ -153,20 +156,39 @@ document.addEventListener("DOMContentLoaded", () => {
             if(new Date(data.get("date").toString()) > new Date()) {
                 error.innerText = "Date is in future. ";
             } else {
-                axios.post("/purchase", {
-                    "customer": data.get("customer"),
-                    "item": data.get("item"),
-                    "quantity": data.get("quantity"),
-                    "date": data.get("date")
-                }).then(() => {
-                    newForm.hidden = true;
-                    newForm.reset();
-                    getPurchases();
-                }).catch(() => {
-                    error.innerText = "There are not enough pieces in stock. ";
-                })
+                if(method === Method.POST) {
+                    axios.post("/purchase", {
+                        "customer": data.get("customer"),
+                        "item": data.get("item"),
+                        "quantity": data.get("quantity"),
+                        "date": data.get("date")
+                    }).then(() => {
+                        newForm.hidden = true;
+                        newForm.reset();
+                        getPurchases();
+                    }).catch(() => {
+                        error.innerText = "There are not enough pieces in stock. ";
+                    })
+                } else {
+                    axios.put(route, {
+                        "customer": data.get("customer"),
+                        "item": data.get("item"),
+                        "quantity": data.get("quantity"),
+                        "date": data.get("date")
+                    }).then(() => {
+                        newForm.hidden = true;
+                        newForm.reset();
+                        getPurchases();
+                    }).catch(() => {
+                        error.innerText = "There are not enough pieces in stock. ";
+                    })
+                }
             }
         }
+    }
+
+    newForm.addEventListener("submit", (evt:Event) => {
+        formSubmit(evt, newForm, Method.POST, "");
     })
 
     newCancel.addEventListener("click", (evt: Event) => {
@@ -178,36 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
     editForm.addEventListener("submit", (evt: Event) => {
-        evt.preventDefault();
-        evt.stopPropagation();
-        error.innerText = ""
-        const data: FormData = new FormData(editForm);
-        let fInput = false;
-        data.forEach(value => {
-            if(value.toString().trim().length === 0) {
-                fInput = true;
-            }
-        })
-        if(fInput) {
-            error.innerText = "Please fill in all fields. ";
-        } else {
-            if(new Date(data.get("date").toString()) > new Date()) {
-                error.innerText = "Date is in future. ";
-            } else {
-                axios.put(editId, {
-                    "customer":data.get("customer"),
-                    "item": data.get("item"),
-                    "quantity": data.get("quantity"),
-                    "date": data.get("date")
-                }).then(() => {
-                    editForm.hidden = true;
-                    editForm.reset();
-                    getPurchases();
-                }).catch((err) => {
-                    console.log(err);
-                })
-            }
-        }
+        formSubmit(evt, editForm, Method.PUT, editId);
     })
 
     editCancel.addEventListener("click", evt => {

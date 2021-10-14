@@ -1,4 +1,4 @@
-//import axios, {AxiosResponse} from "axios";
+//import axios from "axios";
 
 document.addEventListener("DOMContentLoaded", () => {
     const logout: HTMLAnchorElement = document.getElementById("logout") as HTMLAnchorElement;
@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const error: HTMLElement = document.getElementById("error");
     const newForm: HTMLFormElement = document.getElementById("new-form") as HTMLFormElement;
     const newCancel: HTMLButtonElement = document.getElementById("new-cancel") as HTMLButtonElement;
-    const editSend: HTMLButtonElement = document.getElementById("edit-send") as HTMLButtonElement;
     const editCancel: HTMLButtonElement = document.getElementById("edit-cancel") as HTMLButtonElement;
     const editForm: HTMLFormElement = document.getElementById("edit-form") as HTMLFormElement;
     let editId: string = "";
@@ -72,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     error.innerText = "";
                     newForm.hidden = true;
                     editForm.hidden = true;
-                    axios.delete("/item/" + item.id).then((evt) => {
+                    axios.delete("/item/" + item.id).then(() => {
                         getItems();
                     }).catch((err) => {
                         console.log(err);

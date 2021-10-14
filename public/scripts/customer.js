@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
     var error = document.getElementById("error");
     var newForm = document.getElementById("new-form");
     var newCancel = document.getElementById("new-cancel");
-    var editSend = document.getElementById("edit-send");
     var editCancel = document.getElementById("edit-cancel");
     var editForm = document.getElementById("edit-form");
     var editId = "";
@@ -81,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     editForm.hidden = true;
                     axios.delete("/customer/" + customer.id).then(function () {
                         getCustomers();
-                    }).catch(function (err) {
+                    }).catch(function () {
                         deleteError.innerText = "This customer still has purchases";
                     });
                 });

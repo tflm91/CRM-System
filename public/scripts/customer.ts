@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
    const error: HTMLElement = document.getElementById("error");
    const newForm: HTMLFormElement = document.getElementById("new-form") as HTMLFormElement;
    const newCancel: HTMLButtonElement = document.getElementById("new-cancel") as HTMLButtonElement;
-   const editSend: HTMLButtonElement = document.getElementById("edit-send") as HTMLButtonElement;
    const editCancel: HTMLButtonElement = document.getElementById("edit-cancel") as HTMLButtonElement;
    const editForm: HTMLFormElement = document.getElementById("edit-form") as HTMLFormElement;
    let editId: string = "";
@@ -86,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
                editForm.hidden = true;
                axios.delete("/customer/" + customer.id).then(() => {
                   getCustomers();
-               }).catch((err) => {
+               }).catch(() => {
                   deleteError.innerText = "This customer still has purchases";
                });
             });
